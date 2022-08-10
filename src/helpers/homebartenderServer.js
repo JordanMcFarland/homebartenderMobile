@@ -21,9 +21,7 @@ export const loginUser = async (creds) => {
 
     const json = await response.json();
 
-    if (json.success) {
-      localStorage.setItem("token", json.token);
-    } else {
+    if (!json.success) {
       const error = new Error("Error " + json.status);
       error.response = json;
       throw error;

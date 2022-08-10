@@ -1,16 +1,17 @@
 import * as React from "react";
-import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import MainComponent from "./src/components/MainComponent";
-
-const Context = React.createContext();
+import { AuthProvider } from "./src/providers/AuthProvider";
+import { AirtableProvider } from "./src/providers/AirtableProvider";
 
 export default function App() {
   return (
-    <Context.Provider>
-      <NavigationContainer>
-        <MainComponent />
-      </NavigationContainer>
-    </Context.Provider>
+    <AuthProvider>
+      <AirtableProvider>
+        <NavigationContainer>
+          <MainComponent />
+        </NavigationContainer>
+      </AirtableProvider>
+    </AuthProvider>
   );
 }

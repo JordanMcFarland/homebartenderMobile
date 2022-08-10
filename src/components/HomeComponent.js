@@ -1,18 +1,13 @@
-import * as React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Button } from "@rneui/base";
+import { AuthContext } from "../providers/AuthProvider";
 
 function HomeComponent({ navigation }) {
+  const { user } = useContext(AuthContext);
+
   return (
     <View style={styles.container}>
-      <Text>Home Bartender!</Text>
-      <Button
-        onPress={() => {
-          navigation.navigate("Cocktails");
-        }}
-      >
-        Go to cocktails
-      </Button>
+      <Text>{user ? `Hello, ${user.username}!` : "Home Bartender"}</Text>
     </View>
   );
 }
