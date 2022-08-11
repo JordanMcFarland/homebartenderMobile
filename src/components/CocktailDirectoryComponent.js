@@ -1,12 +1,21 @@
 import React, { useContext, useEffect } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, ScrollView } from "react-native";
 import { AirtableContext } from "../providers/AirtableProvider";
-import { fetchCocktails } from "../helpers/airtable";
 import { AuthContext } from "../providers/AuthProvider";
+import { Card } from "@rneui/themed";
+import { Link } from "@react-navigation/native";
 
 const CocktailDirectoryComponent = () => {
   const { cocktails } = useContext(AirtableContext);
   const { loading } = useContext(AuthContext);
+
+  const cocktailDirectory = cocktails.map((cocktail) => (
+    <Card key={cocktail._id}>
+      <Link to={{ screen: "CocktailInfo", params: cocktail }}>
+        <Text>{cocktail.name}</Text>
+      </Link>
+    </Card>
+  ));
 
   if (loading) {
     return (
@@ -21,13 +30,7 @@ const CocktailDirectoryComponent = () => {
         <ActivityIndicator size="large" />
       </View>
     );
-  } else
-    return (
-      <View style={styles.container}>
-        <Text>Here are the cocktails!</Text>
-        <Text>{cocktails ? cocktails[0].name : ""}</Text>
-      </View>
-    );
+  } else return <ScrollView>{cocktails ? cocktailDirectory : ""}</ScrollView>;
 };
 
 const styles = StyleSheet.create({

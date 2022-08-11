@@ -7,7 +7,9 @@ function HomeComponent({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text>{user ? `Hello, ${user.username}!` : "Home Bartender"}</Text>
+      <Text style={styles.text}>
+        {user ? `Hello, ${user.username}!` : "Home Bartender"}
+      </Text>
     </View>
   );
 }
@@ -15,9 +17,12 @@ function HomeComponent({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#262626",
     alignItems: "center",
     justifyContent: "center",
+  },
+  text: {
+    color: "red",
   },
 });
 

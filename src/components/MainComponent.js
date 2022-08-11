@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeComponent from "./HomeComponent";
 import CocktailDirectoryComponent from "./CocktailDirectoryComponent";
 import { ActivityIndicator, View } from "react-native";
 import { AuthContext } from "../providers/AuthProvider";
 import { AirtableContext } from "../providers/AirtableProvider";
 import { fetchCocktails } from "../helpers/airtable";
+import CocktailInfoComponent from "./CocktailInfoComponent";
 
 const MainComponent = () => {
   const [err, setErr] = useState(false);
@@ -18,6 +19,7 @@ const MainComponent = () => {
   const { cocktails, setCocktails } = useContext(AirtableContext);
   const { loading, setLoading } = useContext(AuthContext);
 
+  // Handle User Login
   useEffect(() => {
     const loginUser = async () => {
       try {
@@ -51,8 +53,7 @@ const MainComponent = () => {
             };
           })
           .sort((a, b) => (a.name > b.name ? 1 : -1));
-        setCocktails((prevState) => [...prevState, ...cocktailList]);
-        console.log(cocktailList[0].name);
+        setCocktails(cocktailList);
       } catch (e) {
         console.error(e);
       } finally {
@@ -62,6 +63,26 @@ const MainComponent = () => {
     fetchCocktailAirTable();
   }, []);
 
+  const DirectoryNavigator = () => {
+    const DirectoryStack = createNativeStackNavigator();
+
+    return (
+      <DirectoryStack.Navigator
+        initialRouteName="Directory"
+        screenOptions={{ headerShown: false }}
+      >
+        <DirectoryStack.Screen
+          name="Directory"
+          component={CocktailDirectoryComponent}
+        />
+        <DirectoryStack.Screen
+          name="CocktailInfo"
+          component={CocktailInfoComponent}
+        />
+      </DirectoryStack.Navigator>
+    );
+  };
+
   const Drawer = createDrawerNavigator();
 
   if (loading) {
@@ -69,7 +90,7 @@ const MainComponent = () => {
       <View
         style={{
           flex: 1,
-          backgroundColor: "#fff",
+          backgroundColor: "#262626",
           alignItems: "center",
           justifyContent: "center",
         }}
@@ -79,15 +100,38 @@ const MainComponent = () => {
     );
   } else {
     return (
-      <Drawer.Navigator initialRouteName="Home">
+      <Drawer.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: "#262626",
+          },
+          headerTitleStyle: {
+            color: "#B70D29",
+            fontSize: 28,
+            justifyContent: "center",
+          },
+          headerTitleAlign: "center",
+          drawerStyle: {
+            backgroundColor: "#262626",
+          },
+          drawerActiveTintColor: "#262626",
+          drawerActiveBackgroundColor: "#B70D29",
+          drawerInactiveTintColor: "#B70D29",
+          drawerLabelStyle: {
+            fontSize: 20,
+          },
+        }}
+      >
         <Drawer.Screen
           name="Home"
           component={HomeComponent}
           options={{ title: "Home Bartender" }}
         />
         <Drawer.Screen
-          name="Cocktails"
-          component={CocktailDirectoryComponent}
+          name="Directory Navigator"
+          component={DirectoryNavigator}
+          options={{ title: "Cocktails" }}
         />
       </Drawer.Navigator>
     );
