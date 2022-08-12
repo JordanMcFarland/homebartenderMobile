@@ -7,7 +7,7 @@ import { ActivityIndicator, Pressable, View } from "react-native";
 import { AuthContext } from "../providers/AuthProvider";
 import CocktailInfoComponent from "./CocktailInfoComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const MainComponent = () => {
   const { user, login } = useContext(AuthContext);
@@ -67,6 +67,17 @@ const MainComponent = () => {
         <DirectoryStack.Screen
           name="CocktailInfo"
           component={CocktailInfoComponent}
+          options={({ navigation }) => ({
+            headerLeft: () => (
+              <Pressable onPress={() => navigation.pop()}>
+                <FontAwesomeIcon
+                  icon={faArrowLeft}
+                  size={24}
+                  style={{ color: "#B70D29" }}
+                />
+              </Pressable>
+            ),
+          })}
         />
       </DirectoryStack.Navigator>
     );
