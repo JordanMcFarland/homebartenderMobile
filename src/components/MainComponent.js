@@ -3,21 +3,18 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeComponent from "./HomeComponent";
 import CocktailDirectoryComponent from "./CocktailDirectoryComponent";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 import { AuthContext } from "../providers/AuthProvider";
-import { AirtableContext } from "../providers/AirtableProvider";
-import { fetchCocktails } from "../helpers/airtable";
 import CocktailInfoComponent from "./CocktailInfoComponent";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 const MainComponent = () => {
-  const [err, setErr] = useState(false);
-  const [ingredientCategories, setIngredientCategories] = useState([]);
-  const [favorites, setFavorites] = useState([]);
-  const [myBar, setMyBar] = useState([]);
-
   const { user, login } = useContext(AuthContext);
-  const { cocktails, setCocktails } = useContext(AirtableContext);
   const { loading, setLoading } = useContext(AuthContext);
+
+  const Drawer = createDrawerNavigator();
+  const DirectoryStack = createNativeStackNavigator();
 
   // Handle User Login
   useEffect(() => {
@@ -34,46 +31,38 @@ const MainComponent = () => {
   }, []);
 
   //Maybe move this back to the airtable provider?
-  useEffect(() => {
-    const fetchCocktailAirTable = async () => {
-      try {
-        setLoading(true);
-        const list = await fetchCocktails();
-        const cocktailList = list.records
-          .map((record) => {
-            const { _id, name, requiredIngredients, recipe, image } =
-              record.fields;
-            const ingredientsArr = requiredIngredients.split(",");
-            return {
-              _id,
-              name,
-              requiredIngredients: ingredientsArr.map((item) => item.trim()),
-              recipe,
-              image,
-            };
-          })
-          .sort((a, b) => (a.name > b.name ? 1 : -1));
-        setCocktails(cocktailList);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCocktailAirTable();
-  }, []);
 
-  const DirectoryNavigator = () => {
-    const DirectoryStack = createNativeStackNavigator();
-
+  const DirectoryNavigator = ({ navigation }) => {
     return (
       <DirectoryStack.Navigator
         initialRouteName="Directory"
-        screenOptions={{ headerShown: false }}
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: "#262626",
+          },
+          headerTitleStyle: {
+            color: "#B70D29",
+            fontSize: 28,
+            justifyContent: "center",
+          },
+          headerTitleAlign: "center",
+        }}
       >
         <DirectoryStack.Screen
           name="Directory"
           component={CocktailDirectoryComponent}
+          options={{
+            title: "Cocktails",
+            headerLeft: () => (
+              <Pressable onPress={() => navigation.toggleDrawer()}>
+                <FontAwesomeIcon
+                  icon={faBars}
+                  size={24}
+                  style={{ color: "#B70D29" }}
+                />
+              </Pressable>
+            ),
+          }}
         />
         <DirectoryStack.Screen
           name="CocktailInfo"
@@ -82,8 +71,6 @@ const MainComponent = () => {
       </DirectoryStack.Navigator>
     );
   };
-
-  const Drawer = createDrawerNavigator();
 
   if (loading) {
     return (
@@ -100,9 +87,10 @@ const MainComponent = () => {
     );
   } else {
     return (
+      // Want to style the nav toggler! Cannot access toggleDrawer() for some reason
       <Drawer.Navigator
         initialRouteName="Home"
-        screenOptions={{
+        screenOptions={({ navigation }) => ({
           headerStyle: {
             backgroundColor: "#262626",
           },
@@ -121,7 +109,19 @@ const MainComponent = () => {
           drawerLabelStyle: {
             fontSize: 20,
           },
-        }}
+          headerLeftContainerStyle: {
+            paddingLeft: 15,
+          },
+          headerLeft: () => (
+            <Pressable onPress={() => navigation.toggleDrawer()}>
+              <FontAwesomeIcon
+                icon={faBars}
+                size={24}
+                style={{ color: "#B70D29" }}
+              />
+            </Pressable>
+          ),
+        })}
       >
         <Drawer.Screen
           name="Home"
@@ -131,7 +131,7 @@ const MainComponent = () => {
         <Drawer.Screen
           name="Directory Navigator"
           component={DirectoryNavigator}
-          options={{ title: "Cocktails" }}
+          options={{ title: "Cocktails", headerShown: false }}
         />
       </Drawer.Navigator>
     );

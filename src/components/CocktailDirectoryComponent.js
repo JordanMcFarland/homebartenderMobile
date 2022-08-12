@@ -5,14 +5,14 @@ import { AuthContext } from "../providers/AuthProvider";
 import { Card } from "@rneui/themed";
 import { Link } from "@react-navigation/native";
 
-const CocktailDirectoryComponent = () => {
+const CocktailDirectoryComponent = ({ navigation }) => {
   const { cocktails } = useContext(AirtableContext);
   const { loading } = useContext(AuthContext);
 
   const cocktailDirectory = cocktails.map((cocktail) => (
-    <Card key={cocktail._id}>
+    <Card key={cocktail._id} containerStyle={styles.card}>
       <Link to={{ screen: "CocktailInfo", params: cocktail }}>
-        <Text>{cocktail.name}</Text>
+        <Text style={styles.text}>{cocktail.name}</Text>
       </Link>
     </Card>
   ));
@@ -30,15 +30,33 @@ const CocktailDirectoryComponent = () => {
         <ActivityIndicator size="large" />
       </View>
     );
-  } else return <ScrollView>{cocktails ? cocktailDirectory : ""}</ScrollView>;
+  } else
+    return (
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainerStyle}
+      >
+        {cocktails ? cocktailDirectory : ""}
+      </ScrollView>
+    );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "#262626",
+  },
+  contentContainerStyle: {
+    paddingBottom: 15,
+  },
+  card: {
+    backgroundColor: "#B70D29",
+    borderColor: "#505050",
+    borderRadius: 15,
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
