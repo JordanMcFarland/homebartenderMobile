@@ -5,7 +5,7 @@ import { AuthContext } from "../providers/AuthProvider";
 import { Card } from "@rneui/themed";
 import { Link } from "@react-navigation/native";
 
-const CocktailDirectoryComponent = ({ navigation }) => {
+const CocktailDirectory = () => {
   const { cocktails } = useContext(AirtableContext);
   const { loading } = useContext(AuthContext);
 
@@ -60,4 +60,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CocktailDirectoryComponent;
+export default CocktailDirectory;

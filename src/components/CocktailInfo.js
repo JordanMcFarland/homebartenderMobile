@@ -5,12 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
 
-const CocktailInfoComponent = ({ route }) => {
+const CocktailInfo = ({ route }) => {
   // Temp state solution
   const [favorite, setFavorite] = useState(false);
 
   const cocktail = route.params;
-  console.log(cocktail);
 
   return (
     <View style={styles.container}>
@@ -84,4 +83,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CocktailInfoComponent;
+export default CocktailInfo;

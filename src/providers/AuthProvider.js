@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Alert } from "react-native";
 import { loginUser } from "../helpers/homebartenderServer";
 
 export const AuthContext = React.createContext({});
@@ -11,12 +12,13 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
-        login: async (
-          creds = { username: "allgonewrong", password: "password" }
-        ) => {
+        login: async (creds) => {
+          console.log(creds);
           try {
             const loggedUser = await loginUser(creds);
-            setUser(loggedUser);
+            if (loggedUser) {
+              setUser(loggedUser);
+            } else Alert.alert("Username and/or password do not match.");
           } catch (err) {
             console.error(err);
           }

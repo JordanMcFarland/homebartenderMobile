@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { AuthContext } from "../providers/AuthProvider";
 
-function HomeComponent({ navigation }) {
+function Home() {
   const { user } = useContext(AuthContext);
 
   return (
@@ -26,4 +26,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeComponent;
+export default Home;
