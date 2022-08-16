@@ -21,7 +21,6 @@ const CreateUser = ({ navigation }) => {
         navigation.navigate("Login");
       }
     } catch (err) {
-      console.error(err);
       Alert.alert(err);
     }
   };

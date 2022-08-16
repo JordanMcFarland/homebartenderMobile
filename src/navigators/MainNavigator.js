@@ -8,6 +8,7 @@ import {
 import Home from "../components/Home";
 import { Pressable, Text } from "react-native";
 import CocktailNavigator from "./CocktailNavigator";
+import MyCocktailsNavigator from "./MyCocktailsNavigator";
 import LoginNavigator from "./LoginNavigator";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
@@ -42,7 +43,7 @@ const MainNavigator = () => {
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
-      initialRouteName="Home"
+      initialRouteName={user ? "Home" : "Login"}
       screenOptions={({ navigation }) => ({
         headerStyle: {
           backgroundColor: "#262626",
@@ -93,7 +94,11 @@ const MainNavigator = () => {
           options={{ title: "Login" }}
         />
       ) : (
-        <></>
+        <Drawer.Screen
+          name="MyCocktailsNavigator"
+          component={MyCocktailsNavigator}
+          options={{ title: "My Cocktails", headerShown: false }}
+        />
       )}
     </Drawer.Navigator>
   );

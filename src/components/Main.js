@@ -2,24 +2,30 @@ import React, { useContext, useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { AuthContext } from "../providers/AuthProvider";
 import MainNavigator from "../navigators/MainNavigator";
+import * as SecureStore from "expo-secure-store";
 
 const Main = () => {
-  const { user, login } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const { loading, setLoading } = useContext(AuthContext);
 
-  // Handle User Login
-  // useEffect(() => {
-  //   const loginUser = async () => {
-  //     try {
-  //       await login();
-  //       setLoading(false);
-  //     } catch (err) {
-  //       console.error(err);
-  //       setLoading(false);
-  //     }
-  //   };
-  //   loginUser();
-  // }, []);
+  // Check if we have stored user info and login
+  useEffect(() => {
+    const getStoredUser = async () => {
+      try {
+        const storedUser = await SecureStore.getItemAsync("user");
+        console.log(JSON.parse(storedUser));
+        const parsedUser = await JSON.parse(storedUser);
+        if (storedUser) {
+          await login(parsedUser);
+        }
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    getStoredUser();
+  }, []);
 
   if (loading) {
     return (

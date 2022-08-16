@@ -4,7 +4,7 @@ import { Button } from "@rneui/base/dist/Button";
 import { AuthContext } from "../providers/AuthProvider";
 import * as SecureStore from "expo-secure-store";
 
-function Home() {
+const Home = () => {
   const { user } = useContext(AuthContext);
 
   const getToken = async () => {
@@ -20,7 +20,7 @@ function Home() {
       <Button onPress={() => getToken()}>Press</Button>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

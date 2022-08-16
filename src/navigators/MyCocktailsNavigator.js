@@ -1,17 +1,18 @@
 import React from "react";
 import { Pressable } from "react-native";
-import CocktailDirectory from "../components/CocktailDirectory";
-import CocktailInfo from "../components/CocktailInfo";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import MyCocktails from "../components/MyCocktails";
+import MyCocktailInfo from "../components/CocktailInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faBars, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faArrowLeft, faPlus } from "@fortawesome/free-solid-svg-icons";
+import CocktailCreator from "../components/CocktailCreator";
 
 const Stack = createNativeStackNavigator();
 
-const CocktailNavigator = ({ navigation }) => {
+const MyCocktailsNavigator = ({ navigation }) => {
   return (
     <Stack.Navigator
-      initialRouteName="Cocktails"
+      initialRouteName="My Cocktails"
       screenOptions={{
         headerStyle: {
           backgroundColor: "#262626",
@@ -26,8 +27,8 @@ const CocktailNavigator = ({ navigation }) => {
       }}
     >
       <Stack.Screen
-        name="Cocktails"
-        component={CocktailDirectory}
+        name="My Cocktails"
+        component={MyCocktails}
         options={{
           headerLeft: () => (
             <Pressable onPress={() => navigation.toggleDrawer()}>
@@ -38,12 +39,37 @@ const CocktailNavigator = ({ navigation }) => {
               />
             </Pressable>
           ),
+          headerRight: () => (
+            <Pressable onPress={() => navigation.navigate("CocktailCreator")}>
+              <FontAwesomeIcon
+                icon={faPlus}
+                size={24}
+                style={{ color: "#B70D29" }}
+              />
+            </Pressable>
+          ),
         }}
       />
       <Stack.Screen
-        name="CocktailInfo"
-        component={CocktailInfo}
+        name="MyCocktailInfo"
+        component={MyCocktailInfo}
         options={({ navigation }) => ({
+          headerLeft: () => (
+            <Pressable onPress={() => navigation.pop()}>
+              <FontAwesomeIcon
+                icon={faArrowLeft}
+                size={24}
+                style={{ color: "#B70D29" }}
+              />
+            </Pressable>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="CocktailCreator"
+        component={CocktailCreator}
+        options={({ navigation }) => ({
+          title: "Cocktail Creator",
           headerLeft: () => (
             <Pressable onPress={() => navigation.pop()}>
               <FontAwesomeIcon
@@ -59,4 +85,4 @@ const CocktailNavigator = ({ navigation }) => {
   );
 };
 
-export default CocktailNavigator;
+export default MyCocktailsNavigator;
