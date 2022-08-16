@@ -1,4 +1,19 @@
 import { baseUrl } from "../shared/baseUrl";
+import * as SecureStore from "expo-secure-store";
+
+const getToken = async () => {
+  try {
+    const token = await SecureStore.getItemAsync("token");
+    if (token) {
+      return token;
+    } else {
+      const err = new Error("Could not find token.");
+      throw err;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 // *** User Calls ***
 export const loginUser = async (creds) => {
@@ -21,6 +36,9 @@ export const loginUser = async (creds) => {
 
     const json = await response.json();
 
+    if (json.success) {
+      SecureStore.setItemAsync("token", json.token);
+    }
     if (!json.success) {
       const error = new Error("Error " + json.status);
       error.response = json;
@@ -48,30 +66,32 @@ export const createUserAccount = async (newUserInfo) => {
       body: JSON.stringify(newUserInfo),
     });
 
-    if (!response.ok) {
+    const json = await response.json();
+
+    if (json.err) {
       const error = new Error(
-        `Error ${response.status}: ${response.statusText}`
+        `Error ${response.status}: ${json.err.name} - ${json.err.message}`
       );
-      error.response = response;
+      error.response = json;
       throw error;
     }
 
-    const json = await response.json();
     return json;
   } catch (err) {
-    console.error(err.response);
+    return { err: err };
   }
 };
 
 // *** User cocktails ***
-
 export const postCocktail = async (userCocktail) => {
   try {
+    const token = await getToken();
+
     const response = await fetch(baseUrl + "users/usercocktails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(userCocktail),
     });
@@ -80,7 +100,7 @@ export const postCocktail = async (userCocktail) => {
       const error = new Error(
         `Error ${response.status}: ${response.statusText}`
       );
-      error.response = response;
+      //error.response = response;
       throw error;
     }
 
@@ -100,11 +120,13 @@ export const postCocktail = async (userCocktail) => {
 
 export const getUserCocktails = async () => {
   try {
+    const token = await getToken();
+
     const response = await fetch(baseUrl + "users/usercocktails", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -134,13 +156,15 @@ export const getUserCocktails = async () => {
 
 export const deleteUserCocktail = async (userCocktailId) => {
   try {
+    const token = getToken();
+
     const response = await fetch(
       baseUrl + `users/usercocktails/${userCocktailId}`,
       {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -171,13 +195,15 @@ export const deleteUserCocktail = async (userCocktailId) => {
 
 export const updateUserCocktail = async (userCocktailId, editedCocktail) => {
   try {
+    const token = getToken();
+
     const response = await fetch(
       baseUrl + `users/usercocktails/${userCocktailId}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           name: editedCocktail.name,
@@ -196,7 +222,6 @@ export const updateUserCocktail = async (userCocktailId, editedCocktail) => {
     }
 
     const json = await response.json();
-    console.log(json);
 
     if (json) {
       return json.sort((a, b) =>
@@ -216,11 +241,13 @@ export const updateUserCocktail = async (userCocktailId, editedCocktail) => {
 
 export const getUserFavorites = async () => {
   try {
+    const token = getToken();
+
     const response = await fetch(baseUrl + "users/favorites", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -248,11 +275,13 @@ export const getUserFavorites = async () => {
 
 export const postUserFavorite = async (cocktailInfo) => {
   try {
+    const token = getToken();
+
     const response = await fetch(baseUrl + "users/favorites", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
       body: cocktailInfo,
     });
@@ -279,11 +308,13 @@ export const postUserFavorite = async (cocktailInfo) => {
 
 export const deleteUserFavorite = async (cocktailInfo) => {
   try {
+    const token = getToken();
+
     const response = await fetch(baseUrl + "users/favorites", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
       body: cocktailInfo,
     });
@@ -311,11 +342,13 @@ export const deleteUserFavorite = async (cocktailInfo) => {
 
 export const updateUserBar = async (updatedUserBar) => {
   try {
+    const token = getToken();
+
     const response = await fetch(baseUrl + "users/userBar", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedUserBar),
     });

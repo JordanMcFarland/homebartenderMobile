@@ -1,16 +1,12 @@
 var Airtable = require("airtable");
-//************** HIDE THESE!! */
-const apiKey = "keyZIhyFycya0jS1p";
-const baseKey = "app9Q4GlbOBJoDqnK";
-
-var base = new Airtable({ apiKey: apiKey }).base(baseKey);
+import { REACT_APP_AIRTABLE_BASE, REACT_APP_AIRTABLE_KEY } from "@env";
 
 export const fetchCocktails = async () => {
   const response = await fetch(
-    `https://api.airtable.com/v0/${baseKey}/COCKTAILS`,
+    `https://api.airtable.com/v0/${REACT_APP_AIRTABLE_BASE}/COCKTAILS`,
     {
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${REACT_APP_AIRTABLE_KEY}`,
       },
     }
   );
@@ -21,10 +17,10 @@ export const fetchCocktails = async () => {
 
 export const fetchIngredients = async () => {
   const response = await fetch(
-    `https://api.airtable.com/v0/${baseKey}/INGREDIENTS`,
+    `https://api.airtable.com/v0/${REACT_APP_AIRTABLE_BASE}/INGREDIENTS`,
     {
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${REACT_APP_AIRTABLE_KEY}`,
       },
     }
   );

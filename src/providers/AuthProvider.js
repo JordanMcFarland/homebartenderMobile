@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { loginUser } from "../helpers/homebartenderServer";
+import * as SecureStore from "expo-secure-store";
 
 export const AuthContext = React.createContext({});
 
@@ -13,7 +14,6 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         login: async (creds) => {
-          console.log(creds);
           try {
             const loggedUser = await loginUser(creds);
             if (loggedUser) {
@@ -23,7 +23,10 @@ export const AuthProvider = ({ children }) => {
             console.error(err);
           }
         },
-        logout: () => setUser(),
+        logout: () => {
+          SecureStore.deleteItemAsync("token");
+          setUser();
+        },
         loading,
         setLoading,
       }}

@@ -27,38 +27,40 @@ const Login = () => {
       />
       <Text style={styles.text}>Password:</Text>
       <TextInput
+        value={userInfo.password}
         placeholder="Password"
         style={styles.textInput}
         onChangeText={(password) => setUserInfo({ ...userInfo, password })}
         secureTextEntry
       />
-      <Button style={styles.button} onPress={onUserLogin}>
-        Submit
-      </Button>
+      <Button onPress={onUserLogin}>Submit</Button>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
-    marginVertical: 20,
-    marginHorizontal: 10,
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+    backgroundColor: "#262626",
+    flex: 1,
   },
   text: {
     marginLeft: 40,
     fontSize: 20,
+    color: "#fff",
   },
   textInput: {
     height: 40,
     marginHorizontal: 40,
-    marginVertical: 10,
+    marginTop: 20,
+    marginBottom: 30,
     padding: 8,
     borderWidth: 1,
     borderRadius: 5,
     fontSize: 20,
+    backgroundColor: "#fff",
   },
-  button: {},
 });
 
 export default Login;
