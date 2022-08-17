@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert } from "react-native";
+import { Alert, ToastAndroid } from "react-native";
 import { loginUser, postCocktail } from "../helpers/homebartenderServer";
 import * as SecureStore from "expo-secure-store";
 
@@ -11,17 +11,16 @@ export const AuthProvider = ({ children }) => {
 
   // Need to fix error handling
   const handlePostUserCocktail = async (newUserCocktail) => {
-    const response = await postCocktail(newUserCocktail);
-    if (response && response.success) {
-      Alert.alert("Cocktail added to your list");
-      setUser({
-        ...user,
-        userCocktails: response.userCocktails.sort((a, b) =>
-          a.name > b.name ? 1 : -1
-        ),
+    try {
+      const response = await postCocktail(newUserCocktail);
+      Alert.alert(`${newUserCocktail.name} added to your list`);
+      const userCocktails = response.userCocktails.sort((a, b) => {
+        return a.name > b.name;
       });
-    } else {
-      Alert.alert("Someting went wrong, make sure you include a name.");
+      const userData = { ...user, userCocktails };
+      setUser(userData);
+    } catch (err) {
+      alert(err);
     }
   };
 

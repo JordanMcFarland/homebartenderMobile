@@ -33,10 +33,12 @@ const CocktailCreator = () => {
   };
 
   const toggleIngredient = (ingredient) => {
-    if (!tempIngredients.includes(ingredient)) {
-      setTempIngredients([...tempIngredients, ingredient]);
+    if (!tempIngredients.includes(ingredient.name)) {
+      setTempIngredients([...tempIngredients, ingredient.name]);
     } else {
-      setTempIngredients(tempIngredients.filter((item) => item !== ingredient));
+      setTempIngredients(
+        tempIngredients.filter((item) => item !== ingredient.name)
+      );
     }
   };
 
@@ -61,7 +63,7 @@ const CocktailCreator = () => {
                   title={ingredient.name}
                   checkedColor={"#B70D29"}
                   onPress={() => toggleIngredient(ingredient)}
-                  checked={tempIngredients.includes(ingredient)}
+                  checked={tempIngredients.includes(ingredient.name)}
                 />
               </Card>
             );

@@ -2,16 +2,12 @@ import { baseUrl } from "../shared/baseUrl";
 import * as SecureStore from "expo-secure-store";
 
 const getToken = async () => {
-  try {
-    const token = await SecureStore.getItemAsync("token");
-    if (token) {
-      return token;
-    } else {
-      const err = new Error("Could not find token.");
-      throw err;
-    }
-  } catch (err) {
-    console.log(err);
+  const token = await SecureStore.getItemAsync("token");
+  if (token) {
+    return token;
+  } else {
+    const err = new Error("Could not find user token.");
+    throw err;
   }
 };
 
@@ -84,37 +80,26 @@ export const createUserAccount = async (newUserInfo) => {
 
 // *** User cocktails ***
 export const postCocktail = async (userCocktail) => {
-  try {
-    const token = await getToken();
+  if (!userCocktail) throw new Error("Please provide cocktail information.");
+  let error;
+  const token = await getToken();
 
-    const response = await fetch(baseUrl + "users/usercocktails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(userCocktail),
-    });
+  const response = await fetch(baseUrl + "users/usercocktails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(userCocktail),
+  });
 
-    if (!response.ok) {
-      const error = new Error(
-        `Error ${response.status}: ${response.statusText}`
-      );
-      //error.response = response;
-      throw error;
-    }
+  const json = await response.json();
 
-    const json = await response.json();
-
-    if (json) {
-      return json;
-    } else {
-      const error = new Error("Error " + json.status);
-      error.response = json;
-      throw error;
-    }
-  } catch (err) {
-    console.error(err);
+  if (response.ok) {
+    return json;
+  } else {
+    error = json.error;
+    throw new Error(error);
   }
 };
 
