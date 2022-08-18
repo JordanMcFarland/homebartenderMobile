@@ -18,7 +18,10 @@ const CocktailInfo = ({ route }) => {
           {cocktail.name}
         </Card.FeaturedTitle>
         <Pressable
-          onLongPress={() => {
+          onPress={() => {
+            if (!favorite) {
+              Vibration.vibrate(25);
+            }
             setFavorite(!favorite);
           }}
           style={{ position: "absolute", right: 0, top: -5 }}

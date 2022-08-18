@@ -47,12 +47,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#262626",
   },
   contentContainerStyle: {
-    paddingBottom: 15,
+    paddingBottom: 16,
   },
   card: {
     backgroundColor: "#B70D29",
     borderColor: "#505050",
-    borderRadius: 15,
+    borderRadius: 16,
   },
   text: {
     fontSize: 16,

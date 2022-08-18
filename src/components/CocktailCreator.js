@@ -11,16 +11,16 @@ import { Button } from "@rneui/themed/dist/Button";
 import { AirtableContext } from "../providers/AirtableProvider";
 import { Card } from "@rneui/themed";
 import { CheckBox } from "@rneui/base/dist/CheckBox";
-import { postCocktail } from "../helpers/homebartenderServer";
 import { AuthContext } from "../providers/AuthProvider";
 
-const CocktailCreator = () => {
+const CocktailCreator = ({ navigation }) => {
   const [newCocktail, setNewCocktail] = useState({
     name: "",
     requiredIngredients: [],
     recipe: "",
     image: "",
   });
+  const [errors, setErrors] = useState({});
   const [tempIngredients, setTempIngredients] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [recipeInputHeight, setRecipeInputHeight] = useState(40);
@@ -49,39 +49,100 @@ const CocktailCreator = () => {
     });
   };
 
-  const renderIngredientList = ingredientCategories.map((category, index) => {
-    return (
-      <View key={index} style={styles.cardView}>
-        <Text style={styles.subheaderText}>{category}</Text>
-        <View>
-          {ingredients[category].map((ingredient) => {
-            return (
-              <Card key={ingredient._id} containerStyle={styles.card}>
-                <CheckBox
-                  containerStyle={styles.cardCheck}
-                  textStyle={styles.cardCheckText}
-                  title={ingredient.name}
-                  checkedColor={"#B70D29"}
-                  onPress={() => toggleIngredient(ingredient)}
-                  checked={tempIngredients.includes(ingredient.name)}
-                />
-              </Card>
-            );
-          })}
+  const onPostUserCocktail = async (newCocktail) => {
+    if (validate()) {
+      try {
+        await handlePostUserCocktail(newCocktail);
+        setNewCocktail({
+          name: "",
+          requiredIngredients: [],
+          recipe: "",
+          image: "",
+        });
+      } catch (err) {
+        alert(err);
+      }
+    }
+  };
+
+  const renderStockIngredientList = ingredientCategories.map(
+    (category, index) => {
+      return (
+        <View key={index} style={styles.cardView}>
+          <Text style={styles.subheaderText}>{category}</Text>
+          <View>
+            {ingredients[category].map((ingredient) => {
+              return (
+                <Card key={ingredient._id} containerStyle={styles.card}>
+                  <CheckBox
+                    containerStyle={styles.cardCheck}
+                    textStyle={styles.cardCheckText}
+                    title={ingredient.name}
+                    checkedColor={"#B70D29"}
+                    onPress={() => toggleIngredient(ingredient)}
+                    checked={tempIngredients.includes(ingredient.name)}
+                  />
+                </Card>
+              );
+            })}
+          </View>
         </View>
-      </View>
-    );
-  });
+      );
+    }
+  );
+
+  const renderChosenIngredients = newCocktail.requiredIngredients.map(
+    (ingredient, index) => {
+      return (
+        <Text style={{ ...styles.text, fontSize: 20 }} key={index}>
+          {`- ${ingredient}`}
+        </Text>
+      );
+    }
+  );
+
+  const validate = () => {
+    let valid = true;
+    if (!newCocktail.name) {
+      setErrors({ name: "A cocktail name is required." });
+      valid = false;
+    }
+    return valid;
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Name: </Text>
       <TextInput
-        style={styles.textInput}
+        style={
+          errors.name
+            ? { ...styles.textInput, borderColor: "red", borderWidth: 2 }
+            : styles.textInput
+        }
         value={newCocktail.name}
         onChangeText={(name) => updateNewCocktail(name, "name")}
+        onFocus={() => setErrors({})}
       />
+      {errors.name && (
+        <Text style={{ color: "red", marginTop: 4 }}>{errors.name}</Text>
+      )}
       <Text style={styles.text}>Ingredients: </Text>
+      {newCocktail.requiredIngredients.length ? (
+        <ScrollView
+          style={{
+            maxHeight: "25%",
+            backgroundColor: "#999999",
+            borderRadius: 8,
+            marginTop: 16,
+          }}
+          contentContainerStyle={{ padding: 8 }}
+        >
+          {renderChosenIngredients}
+        </ScrollView>
+      ) : (
+        <></>
+      )}
+
       <Button
         containerStyle={styles.button}
         title="Show Ingredients"
@@ -102,94 +163,89 @@ const CocktailCreator = () => {
         containerStyle={{ ...styles.button, alignSelf: "center" }}
         title="Submit"
         onPress={() => {
-          console.log(newCocktail);
-          handlePostUserCocktail(newCocktail);
+          console.log(errors);
+          onPostUserCocktail(newCocktail);
         }}
       />
 
-      <Modal visible={modalVisible} transparent={true} animationType={"fade"}>
-        <View style={styles.centeredView}>
-          <ScrollView style={styles.modalView}>
-            {renderIngredientList}
-          </ScrollView>
-          <View style={styles.buttonContainer}>
-            <Button
-              containerStyle={{
-                width: "25%",
-              }}
-              title="Clear"
-              onPress={() => {
-                setTempIngredients([]);
-              }}
-            />
-            <Button
-              title="Save Ingredients"
-              containerStyle={{
-                width: "25%",
-              }}
-              onPress={() => {
-                saveIngredients();
-                setModalVisible(!modalVisible);
-              }}
-            />
+      <View style={styles.centeredView}>
+        <Modal visible={modalVisible} transparent={true} animationType={"fade"}>
+          <View style={styles.modalView}>
+            <ScrollView>{renderStockIngredientList}</ScrollView>
+
+            <View style={styles.buttonContainer}>
+              <Button
+                containerStyle={{
+                  width: "30%",
+                }}
+                title="Clear"
+                onPress={() => {
+                  setTempIngredients([]);
+                }}
+              />
+              <Button
+                title="Save Ingredients"
+                containerStyle={{
+                  width: "45%",
+                }}
+                onPress={() => {
+                  saveIngredients();
+                  setModalVisible(!modalVisible);
+                }}
+              />
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 40,
-    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingHorizontal: 40,
     backgroundColor: "#262626",
     flex: 1,
   },
   text: {
-    marginLeft: 40,
-    fontSize: 20,
+    fontSize: 24,
     color: "#fff",
+    marginTop: 20,
   },
   textInput: {
     height: 40,
-    textAlignVertical: "top",
-    marginHorizontal: 40,
-    marginTop: 20,
-    marginBottom: 30,
     padding: 8,
+    marginTop: 20,
+    //marginBottom: 30,
     borderWidth: 1,
     borderRadius: 5,
     fontSize: 20,
     backgroundColor: "#fff",
   },
   centeredView: {
+    alignContent: "center",
     justifyContent: "center",
-    backgroundColor: "#B70D29",
-    paddingBottom: 25,
-    margin: 10,
-    borderRadius: 25,
   },
   modalView: {
-    alignSelf: "center",
-    width: "100%",
-    margin: 10,
-    borderRadius: 25,
+    flex: 1,
+    margin: 16,
+    borderRadius: 24,
+    backgroundColor: "#B70D29",
   },
   subheaderText: {
-    marginTop: 15,
+    paddingTop: 12,
     fontSize: 24,
     textAlign: "center",
     fontWeight: "bold",
   },
   cardView: {
-    padding: 15,
-    borderRadius: 15,
+    padding: 8,
   },
   card: {
     backgroundColor: "#262626",
     borderColor: "#505050",
-    borderRadius: 15,
+    borderRadius: 8,
     padding: 0,
   },
   cardCheck: {
@@ -201,11 +257,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   buttonContainer: {
+    padding: 12,
     flexDirection: "row",
     justifyContent: "space-evenly",
   },
   button: {
-    paddingLeft: 40,
     marginVertical: 20,
     alignSelf: "flex-start",
   },

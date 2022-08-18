@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ToastAndroid } from "react-native";
 import { Button } from "@rneui/base/dist/Button";
 import { AuthContext } from "../providers/AuthProvider";
 import * as SecureStore from "expo-secure-store";
@@ -17,7 +17,9 @@ const Home = () => {
       <Text style={styles.text}>
         {user ? `Hello, ${user.username}!` : "Home Bartender"}
       </Text>
-      <Button onPress={() => getToken()}>Press</Button>
+      <Button onPress={() => ToastAndroid.show("A Toast!", ToastAndroid.LONG)}>
+        Press
+      </Button>
     </View>
   );
 };

@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Pressable, StyleSheet, Text, View, Image } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Vibration,
+} from "react-native";
 import { Card } from "@rneui/themed";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
@@ -18,7 +25,10 @@ const CocktailInfo = ({ route }) => {
           {cocktail.name}
         </Card.FeaturedTitle>
         <Pressable
-          onLongPress={() => {
+          onPress={() => {
+            if (!favorite) {
+              Vibration.vibrate(25);
+            }
             setFavorite(!favorite);
           }}
           style={{ position: "absolute", right: 0, top: -5 }}

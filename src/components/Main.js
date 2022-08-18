@@ -3,6 +3,7 @@ import { ActivityIndicator, View } from "react-native";
 import { AuthContext } from "../providers/AuthProvider";
 import MainNavigator from "../navigators/MainNavigator";
 import * as SecureStore from "expo-secure-store";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Main = () => {
   const { login } = useContext(AuthContext);
@@ -41,7 +42,11 @@ const Main = () => {
       </View>
     );
   } else {
-    return <MainNavigator />;
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#262626" }}>
+        <MainNavigator />
+      </SafeAreaView>
+    );
   }
 };
 

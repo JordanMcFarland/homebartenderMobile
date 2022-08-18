@@ -11,17 +11,16 @@ export const AuthProvider = ({ children }) => {
 
   // Need to fix error handling
   const handlePostUserCocktail = async (newUserCocktail) => {
-    try {
-      const response = await postCocktail(newUserCocktail);
-      Alert.alert(`${newUserCocktail.name} added to your list`);
-      const userCocktails = response.userCocktails.sort((a, b) => {
-        return a.name > b.name;
-      });
-      const userData = { ...user, userCocktails };
-      setUser(userData);
-    } catch (err) {
-      alert(err);
-    }
+    const response = await postCocktail(newUserCocktail);
+    ToastAndroid.show(
+      `${newUserCocktail.name} has been added to your cocktail list`,
+      ToastAndroid.SHORT
+    );
+    const userCocktails = response.userCocktails.sort((a, b) => {
+      return a.name > b.name;
+    });
+    const userData = { ...user, userCocktails };
+    setUser(userData);
   };
 
   return (
