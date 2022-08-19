@@ -2,10 +2,11 @@ import React from "react";
 import { Pressable } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MyCocktails from "../components/MyCocktails";
-import MyCocktailInfo from "../components/CocktailInfo";
+import MyCocktailInfo from "../components/MyCocktailInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faBars, faArrowLeft, faPlus } from "@fortawesome/free-solid-svg-icons";
 import CocktailCreator from "../components/CocktailCreator";
+import MyCocktailEditor from "../components/MyCocktailEditor";
 
 const Stack = createNativeStackNavigator();
 
@@ -70,6 +71,22 @@ const MyCocktailsNavigator = ({ navigation }) => {
         component={CocktailCreator}
         options={({ navigation }) => ({
           title: "Cocktail Creator",
+          headerLeft: () => (
+            <Pressable onPress={() => navigation.pop()}>
+              <FontAwesomeIcon
+                icon={faArrowLeft}
+                size={24}
+                style={{ color: "#B70D29" }}
+              />
+            </Pressable>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="MyCocktailEditor"
+        component={MyCocktailEditor}
+        options={({ navigation }) => ({
+          title: "Cocktail Editor",
           headerLeft: () => (
             <Pressable onPress={() => navigation.pop()}>
               <FontAwesomeIcon

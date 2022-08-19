@@ -1,15 +1,38 @@
-import React, { useState } from "react";
-import { Pressable, StyleSheet, Text, View, Image } from "react-native";
+import React, { useContext, useState } from "react";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Vibration,
+} from "react-native";
 import { Card } from "@rneui/themed";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faHeart } from "@fortawesome/free-regular-svg-icons";
+import {
+  faHeart,
+  faTrashCan,
+  faEdit,
+} from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
+import { AuthContext } from "../providers/AuthProvider";
+import { Link } from "@react-navigation/native";
 
-const CocktailInfo = ({ route }) => {
+const MyCocktailInfo = ({ route, navigation }) => {
   // Temp state solution
   const [favorite, setFavorite] = useState(false);
+  const { handleDeleteUserCocktail } = useContext(AuthContext);
 
   const cocktail = route.params;
+
+  const onDeleteUserCocktail = async () => {
+    try {
+      await handleDeleteUserCocktail(cocktail);
+      navigation.navigate("My Cocktails");
+    } catch (err) {
+      alert(err);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -20,11 +43,11 @@ const CocktailInfo = ({ route }) => {
         <Pressable
           onPress={() => {
             if (!favorite) {
-              Vibration.vibrate(25);
+              Vibration.vibrate(50);
             }
             setFavorite(!favorite);
           }}
-          style={{ position: "absolute", right: 0, top: -5 }}
+          style={{ position: "absolute", right: 10, top: -5 }}
         >
           <FontAwesomeIcon
             icon={favorite ? faSolidHeart : faHeart}
@@ -34,16 +57,30 @@ const CocktailInfo = ({ route }) => {
             }}
           />
         </Pressable>
+        <Link
+          to={{ screen: "MyCocktailEditor", params: cocktail }}
+          style={{ position: "absolute", right: 64, top: -5 }}
+        >
+          <FontAwesomeIcon
+            icon={faEdit}
+            size={32}
+            style={{
+              color: "#262626",
+            }}
+          />
+        </Link>
         <Card.Divider />
-        <Image
-          source={{ uri: cocktail.image }}
-          style={{
-            width: "75%",
-            height: "50%",
-            resizeMode: "cover",
-            alignSelf: "center",
-          }}
-        />
+        {cocktail.image && (
+          <Image
+            source={{ uri: cocktail.image }}
+            style={{
+              width: "75%",
+              height: "50%",
+              resizeMode: "cover",
+              alignSelf: "center",
+            }}
+          />
+        )}
         {cocktail.requiredIngredients.map((ingredient, index) => {
           return (
             <Text style={styles.text} key={index}>
@@ -86,4 +123,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CocktailInfo;
+export default MyCocktailInfo;

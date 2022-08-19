@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Alert, ToastAndroid } from "react-native";
-import { loginUser, postCocktail } from "../helpers/homebartenderServer";
+import {
+  deleteUserCocktail,
+  loginUser,
+  postCocktail,
+  updateUserCocktail,
+} from "../helpers/homebartenderServer";
 import * as SecureStore from "expo-secure-store";
 
 export const AuthContext = React.createContext({});
@@ -20,6 +25,43 @@ export const AuthProvider = ({ children }) => {
       return a.name > b.name;
     });
     const userData = { ...user, userCocktails };
+    setUser(userData);
+  };
+
+  const handleDeleteUserCocktail = async (userCocktail) => {
+    let updatedUserCocktails = [];
+    const response = await deleteUserCocktail(userCocktail._id);
+    ToastAndroid.show(
+      `${userCocktail.name} has been removed to your cocktail list`,
+      ToastAndroid.SHORT
+    );
+    updatedUserCocktails = response.userCocktails.sort((a, b) => {
+      return a.name > b.name;
+    });
+
+    const userData = { ...user, userCocktails: updatedUserCocktails };
+    setUser(userData);
+  };
+
+  const handleUpdateUserCocktail = async (
+    userCocktailId,
+    editedUserCocktail
+  ) => {
+    let updatedUserCocktails = [];
+    const response = await updateUserCocktail(
+      userCocktailId,
+      editedUserCocktail
+    );
+    console.log(response);
+    ToastAndroid.show(
+      `${editedUserCocktail.name} has been updated in your cocktail list`,
+      ToastAndroid.SHORT
+    );
+    updatedUserCocktails = response.userCocktails.sort((a, b) => {
+      return a.name > b.name;
+    });
+
+    const userData = { ...user, userCocktails: updatedUserCocktails };
     setUser(userData);
   };
 
@@ -46,6 +88,8 @@ export const AuthProvider = ({ children }) => {
         loading,
         setLoading,
         handlePostUserCocktail,
+        handleDeleteUserCocktail,
+        handleUpdateUserCocktail,
       }}
     >
       {children}

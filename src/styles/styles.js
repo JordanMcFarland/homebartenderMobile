@@ -10,7 +10,9 @@ const xl = 32;
 const xxl = 40;
 
 const colors = {
-  red: "#B70D29",
+  primary: "#B70D29",
+  secondary: "#D3D3D3",
+  background: "#262626",
 };
 
 // g is global
@@ -31,10 +33,12 @@ const g = StyleSheet.create({
     margin: xl,
   },
   m6: {
-    xxl,
+    margin: xxl,
   },
-  red: {
-    color: colors.red,
+  colors: {
+    primary: colors.primary,
+    secondary: colors.secondary,
+    background: colors.background,
   },
 });
 

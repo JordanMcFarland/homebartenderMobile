@@ -27,7 +27,7 @@ const CocktailInfo = ({ route }) => {
         <Pressable
           onPress={() => {
             if (!favorite) {
-              Vibration.vibrate(25);
+              Vibration.vibrate(50);
             }
             setFavorite(!favorite);
           }}
@@ -42,15 +42,17 @@ const CocktailInfo = ({ route }) => {
           />
         </Pressable>
         <Card.Divider />
-        <Image
-          source={{ uri: cocktail.image }}
-          style={{
-            width: "75%",
-            height: "50%",
-            resizeMode: "cover",
-            alignSelf: "center",
-          }}
-        />
+        {cocktail.image && (
+          <Image
+            source={{ uri: cocktail.image }}
+            style={{
+              width: "75%",
+              height: "50%",
+              resizeMode: "cover",
+              alignSelf: "center",
+            }}
+          />
+        )}
         {cocktail.requiredIngredients.map((ingredient, index) => {
           return (
             <Text style={styles.text} key={index}>
