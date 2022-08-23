@@ -4,17 +4,179 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Modal,
   ScrollView,
   Keyboard,
-  Dimensions,
+  Pressable,
+  Alert,
 } from "react-native";
 import { Button } from "@rneui/themed/dist/Button";
 import { AirtableContext } from "../providers/AirtableProvider";
 import { Card } from "@rneui/base";
-import { CheckBox } from "@rneui/base/dist/CheckBox";
 import { AuthContext } from "../providers/AuthProvider";
 import g from "../styles/styles";
+import SelectDropdown from "react-native-select-dropdown";
+import RadioButtonsGroup from "react-native-radio-buttons-group";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+
+const IngredientContainer = ({
+  deleteIngredient,
+  ingredientId,
+  tempIngredients,
+  setTempIngredients,
+}) => {
+  // STATE
+  const radioButtonsData = [
+    {
+      id: "1",
+      label: "Core Ingredient",
+      value: "coreingredient",
+      selected: true,
+    },
+    {
+      id: "2",
+      label: "Garnish",
+      value: "garnish",
+    },
+  ];
+  const [radioButtons, setRadioButtons] = useState(radioButtonsData);
+  const [ingredientInfo, setIngredientInfo] = useState({
+    name: "",
+    amount: "",
+    unit: "",
+    type: "Core Ingredient",
+  });
+  const units = ["oz", "tsp", "tbs", "dash"];
+
+  // FUNCTIONS
+  useEffect(() => {
+    updateTempIngredients();
+  }, [ingredientInfo]);
+
+  const updateTempIngredients = () => {
+    const index = tempIngredients.findIndex(
+      (ingredient) => ingredient._id === ingredientId
+    );
+    const arr = [...tempIngredients];
+    //const ingredientString = `${ingredientInfo.amount} ${ingredientInfo.unit} ${ingredientInfo.name}`;
+    arr[index] = { ...arr[index], ...ingredientInfo };
+    setTempIngredients(arr);
+  };
+
+  const updateIngredientInfo = (key, value) => {
+    setIngredientInfo({ ...ingredientInfo, [key]: value });
+  };
+
+  const onPressRadioButton = (radioButtonsArray) => {
+    setRadioButtons(radioButtonsArray);
+    setIngredientInfo({
+      ...ingredientInfo,
+      type: radioButtonsArray[0].selected ? "Core Ingredient" : "Garnish",
+    });
+  };
+
+  const confirmDeleteIngredient = () => {
+    Alert.alert(
+      "Delete this ingredient?",
+      null,
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Confirm",
+          onPress: () => deleteIngredient(ingredientId),
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
+  };
+
+  // RENDER
+  return (
+    <View
+      style={{
+        borderWidth: 1,
+        borderColor: g.colors.background,
+        backgroundColor: g.colors.secondary,
+        paddingVertical: 8,
+        paddingHorizontal: 8,
+        borderRadius: 8,
+        marginTop: 16,
+      }}
+    >
+      <Text>Ingredient Name:</Text>
+      <TextInput
+        style={{ ...styles.textInput, marginTop: 8 }}
+        onFocus={() => console.log(ingredientInfo)}
+        value={ingredientInfo.name}
+        onChangeText={(name) => updateIngredientInfo("name", name)}
+      />
+      <Text>Amount:</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <TextInput
+          keyboardType="number-pad"
+          style={{
+            ...styles.textInput,
+            width: "25%",
+            maxWidth: "50%",
+            marginHorizontal: 8,
+            marginTop: 8,
+          }}
+          onChangeText={(amount) => updateIngredientInfo("amount", amount)}
+        />
+        <SelectDropdown
+          data={units}
+          buttonStyle={{
+            borderRadius: 8,
+            backgroundColor: g.colors.primary,
+            maxWidth: "50%",
+            marginHorizontal: 8,
+            marginTop: 8,
+            height: 40,
+          }}
+          defaultButtonText="Select"
+          buttonTextAfterSelection={(selectedItem) => selectedItem}
+          onSelect={(selectedItem) =>
+            updateIngredientInfo("unit", selectedItem)
+          }
+        />
+      </View>
+      <Text>Type:</Text>
+      <RadioButtonsGroup
+        radioButtons={radioButtons}
+        onPress={(radioButtonsArray) => {
+          onPressRadioButton(radioButtonsArray);
+          console.log();
+        }}
+        containerStyle={{ flexDirection: "row" }}
+      />
+      <Pressable
+        style={{
+          position: "absolute",
+          right: 8,
+          top: 8,
+        }}
+        onPress={() => confirmDeleteIngredient()}
+      >
+        <FontAwesomeIcon
+          icon={faTrashCan}
+          style={{ color: g.colors.primary }}
+          size={24}
+        />
+      </Pressable>
+    </View>
+  );
+};
 
 const CocktailCreator = ({ navigation }) => {
   const [newCocktail, setNewCocktail] = useState({
@@ -23,32 +185,36 @@ const CocktailCreator = ({ navigation }) => {
     recipe: "",
     image: "",
   });
+  const [tempIngredients, setTempIngredients] = useState([{ _id: 0 }]);
+  const [nextIngredientId, setNextIngredientId] = useState(1);
   const [errors, setErrors] = useState({});
-  const [tempIngredients, setTempIngredients] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [recipeInputHeight, setRecipeInputHeight] = useState(40);
 
   const { ingredients, ingredientCategories } = useContext(AirtableContext);
   const { handlePostUserCocktail } = useContext(AuthContext);
 
+  useEffect(() => {
+    saveIngredients();
+  }, [tempIngredients]);
+
   const updateNewCocktail = (value, name) => {
     setNewCocktail({ ...newCocktail, [name]: value });
   };
 
-  const toggleIngredient = (ingredient) => {
-    if (!tempIngredients.includes(ingredient.name)) {
-      setTempIngredients([...tempIngredients, ingredient.name]);
-    } else {
-      setTempIngredients(
-        tempIngredients.filter((item) => item !== ingredient.name)
-      );
-    }
-  };
-
   const saveIngredients = () => {
+    const trimmedIngredients = [];
+    tempIngredients.forEach((ingredient) => {
+      const trimmedIngredient = {
+        name: ingredient.name,
+        unit: ingredient.unit,
+        amount: ingredient.amount,
+      };
+      trimmedIngredients.push(trimmedIngredient);
+    });
     setNewCocktail({
       ...newCocktail,
-      requiredIngredients: tempIngredients,
+      requiredIngredients: trimmedIngredients,
     });
   };
 
@@ -56,7 +222,7 @@ const CocktailCreator = ({ navigation }) => {
     if (validate()) {
       try {
         await handlePostUserCocktail(newCocktail);
-        setTempIngredients([]);
+        setTempIngredients([{ _id: 0 }]);
         setNewCocktail({
           name: "",
           requiredIngredients: [],
@@ -70,45 +236,6 @@ const CocktailCreator = ({ navigation }) => {
     }
   };
 
-  const renderStockIngredientList = ingredientCategories.map(
-    (category, index) => {
-      return (
-        <View key={index} style={styles.ingredientCardView}>
-          <Text style={styles.subheaderText}>{category}</Text>
-          <View>
-            {ingredients[category].map((ingredient) => {
-              return (
-                <Card
-                  key={ingredient._id}
-                  containerStyle={styles.ingredientCard}
-                >
-                  <CheckBox
-                    containerStyle={styles.ingredientCardCheck}
-                    textStyle={styles.ingredientCardCheckText}
-                    title={ingredient.name}
-                    checkedColor={"#B70D29"}
-                    onPress={() => toggleIngredient(ingredient)}
-                    checked={tempIngredients.includes(ingredient.name)}
-                  />
-                </Card>
-              );
-            })}
-          </View>
-        </View>
-      );
-    }
-  );
-
-  const renderChosenIngredients = newCocktail.requiredIngredients.map(
-    (ingredient, index) => {
-      return (
-        <Text style={{ fontSize: 20 }} key={index}>
-          {`- ${ingredient}`}
-        </Text>
-      );
-    }
-  );
-
   const validate = () => {
     Keyboard.dismiss();
     let valid = true;
@@ -118,6 +245,28 @@ const CocktailCreator = ({ navigation }) => {
     }
     return valid;
   };
+
+  const addIngredient = () => {
+    setTempIngredients([...tempIngredients, { _id: nextIngredientId }]);
+    setNextIngredientId(nextIngredientId + 1);
+  };
+
+  const deleteIngredient = (_id) => {
+    const newTempIngredientsArr = tempIngredients.filter(
+      (ingredient) => ingredient._id !== _id
+    );
+    setTempIngredients(newTempIngredientsArr);
+  };
+
+  const renderIngredientContainers = tempIngredients.map((ingredient) => (
+    <IngredientContainer
+      key={ingredient._id}
+      deleteIngredient={deleteIngredient}
+      ingredientId={ingredient._id}
+      tempIngredients={tempIngredients}
+      setTempIngredients={setTempIngredients}
+    />
+  ));
 
   return (
     <View style={styles.container}>
@@ -139,34 +288,22 @@ const CocktailCreator = ({ navigation }) => {
               <Text style={{ color: "red", marginTop: 4 }}>{errors.name}</Text>
             )}
             <Text style={{ fontSize: 24, marginTop: 16 }}>Ingredients: </Text>
-            {newCocktail.requiredIngredients.length ? (
-              <View
-                style={{
-                  overflow: "hidden",
-                  borderRadius: 8,
-                  borderColor: g.colors.background,
-                  borderWidth: 1,
-                }}
-              >
-                <ScrollView
-                  style={{ maxHeight: 256 }}
-                  nestedScrollEnabled={true}
-                >
-                  <View style={styles.ingredientScrollView}>
-                    {renderChosenIngredients}
-                  </View>
-                </ScrollView>
-              </View>
-            ) : (
-              <></>
-            )}
-
-            <Button
-              containerStyle={styles.button}
-              title="Show Ingredients"
-              color="#505050"
-              onPress={() => setModalVisible(true)}
-            />
+            {renderIngredientContainers}
+            <Pressable
+              style={{
+                marginTop: 16,
+                backgroundColor: g.colors.background,
+                alignSelf: "flex-start",
+                borderRadius: 16,
+              }}
+              onPress={() => addIngredient()}
+            >
+              <FontAwesomeIcon
+                icon={faPlus}
+                style={{ color: g.colors.primary }}
+                size={24}
+              />
+            </Pressable>
             <Text style={{ fontSize: 24, marginTop: 16 }}>Recipe: </Text>
             <TextInput
               style={{ ...styles.textInput, height: recipeInputHeight }}
@@ -184,41 +321,12 @@ const CocktailCreator = ({ navigation }) => {
               }}
               title="Submit"
               onPress={() => {
+                console.log(newCocktail);
                 onPostUserCocktail(newCocktail);
               }}
             />
           </View>
         </ScrollView>
-
-        <Modal visible={modalVisible} transparent={true} animationType={"fade"}>
-          <View style={styles.modalView}>
-            <ScrollView>{renderStockIngredientList}</ScrollView>
-
-            <View style={styles.buttonContainer}>
-              <Button
-                containerStyle={{
-                  marginHorizontal: 8,
-                  borderRadius: 8,
-                }}
-                title="Clear"
-                onPress={() => {
-                  setTempIngredients([]);
-                }}
-              />
-              <Button
-                title="Save Ingredients"
-                containerStyle={{
-                  marginHorizontal: 8,
-                  borderRadius: 8,
-                }}
-                onPress={() => {
-                  saveIngredients();
-                  setModalVisible(!modalVisible);
-                }}
-              />
-            </View>
-          </View>
-        </Modal>
       </Card>
     </View>
   );
@@ -253,40 +361,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFCCCB",
     borderRadius: 8,
     padding: 8,
-  },
-  modalView: {
-    flex: 1,
-    margin: 16,
-    borderRadius: 24,
-    backgroundColor: "#B70D29",
-  },
-  subheaderText: {
-    paddingTop: 12,
-    fontSize: 24,
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  ingredientCardView: {
-    padding: 8,
-  },
-  ingredientCard: {
-    backgroundColor: "#262626",
-    borderColor: "#505050",
-    borderRadius: 8,
-    padding: 0,
-  },
-  ingredientCardCheck: {
-    fontSize: 20,
-    backgroundColor: "#262626",
-  },
-  ingredientCardCheckText: {
-    color: "#fff",
-    fontSize: 20,
-  },
-  buttonContainer: {
-    padding: 12,
-    flexDirection: "row",
-    justifyContent: "space-evenly",
   },
   button: {
     marginTop: 16,

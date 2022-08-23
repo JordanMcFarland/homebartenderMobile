@@ -53,6 +53,16 @@ const CocktailInfo = ({ route }) => {
             }}
           />
         )}
+        <Text
+          style={{
+            ...styles.text,
+            marginTop: 15,
+            marginBottom: 10,
+            fontWeight: "bold",
+          }}
+        >
+          Ingredients:
+        </Text>
         {cocktail.requiredIngredients.map((ingredient, index) => {
           return (
             <Text style={styles.text} key={index}>

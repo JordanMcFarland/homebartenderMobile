@@ -82,9 +82,14 @@ const MyCocktailInfo = ({ route, navigation }) => {
           />
         )}
         {cocktail.requiredIngredients.map((ingredient, index) => {
+          const ingredientString =
+            `- ${ingredient.amount} ${ingredient.unit} ${ingredient.name}`.replace(
+              /  +/g,
+              " "
+            );
           return (
             <Text style={styles.text} key={index}>
-              {ingredient}
+              {ingredientString}
             </Text>
           );
         })}
