@@ -18,6 +18,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import SelectDropdown from "react-native-select-dropdown";
 import RadioButtonsGroup from "react-native-radio-buttons-group";
+import { AirtableContext } from "../providers/AirtableProvider";
+import { CheckBox } from "@rneui/base";
 
 // NEED TO FIX
 // connect the ingredient container to cocktail editor component state
@@ -25,45 +27,49 @@ import RadioButtonsGroup from "react-native-radio-buttons-group";
 
 const IngredientContainer = ({
   deleteIngredient,
-  ingredientId,
   tempIngredients,
   setTempIngredients,
   ingredient,
 }) => {
   // STATE
+  const [ingredientInfo, setIngredientInfo] = useState({
+    name: ingredient.name ? ingredient.name : "",
+    amount: ingredient.amount ? ingredient.amount : "",
+    unit: ingredient.unit ? ingredient.unit : "",
+    type: "Core Ingredient",
+    custom: ingredient.custom,
+  });
   const radioButtonsData = [
     {
       id: "1",
       label: "Core Ingredient",
       value: "coreingredient",
-      selected: true,
+      selected: ingredient.type ? ingredient.type === "Core Ingredient" : true,
     },
     {
       id: "2",
       label: "Garnish",
       value: "garnish",
+      selected: ingredient.type === "Garnish",
     },
   ];
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
-  const [ingredientInfo, setIngredientInfo] = useState({
-    name: ingredient.name,
-    amount: ingredient.amount,
-    unit: ingredient.unit,
-    type: "Core Ingredient",
-  });
-  const units = ["oz", "tsp", "tbs", "dash"];
+
+  const { uncategorizedIngredients } = useContext(AirtableContext);
+  const units = ["oz", "tsp", "tbs", "dash", "dashes"];
 
   // FUNCTIONS
+  useEffect(() => console.log(ingredient), []);
+
   useEffect(() => {
     updateTempIngredients();
   }, [ingredientInfo]);
 
   const updateTempIngredients = () => {
     const index = tempIngredients.findIndex(
-      (ingredient) => ingredient._id === ingredientId
+      (ing) => ing._id === ingredient._id
     );
     const arr = [...tempIngredients];
-    //const ingredientString = `${ingredientInfo.amount} ${ingredientInfo.unit} ${ingredientInfo.name}`;
     arr[index] = { ...arr[index], ...ingredientInfo };
     setTempIngredients(arr);
   };
@@ -91,7 +97,7 @@ const IngredientContainer = ({
         },
         {
           text: "Confirm",
-          onPress: () => deleteIngredient(ingredientId),
+          onPress: () => deleteIngredient(ingredient._id),
         },
       ],
       {
@@ -114,13 +120,60 @@ const IngredientContainer = ({
       }}
     >
       <Text>Ingredient Name:</Text>
-      <TextInput
-        style={{ ...styles.textInput, marginTop: 8 }}
-        onFocus={() => console.log(ingredientInfo)}
-        value={ingredientInfo.name}
-        onChangeText={(name) => updateIngredientInfo("name", name)}
-      />
-      <Text>Amount:</Text>
+      <View style={{ flexDirection: "row" }}>
+        {ingredientInfo.custom ? (
+          <TextInput
+            style={{ ...styles.textInput, marginTop: 8, width: "60%" }}
+            onFocus={() => console.log(ingredientInfo)}
+            value={ingredientInfo.name}
+            onChangeText={(name) => updateIngredientInfo("name", name)}
+          />
+        ) : (
+          <SelectDropdown
+            data={uncategorizedIngredients}
+            search={true}
+            defaultValue={ingredientInfo.name}
+            onSelect={(name) => updateIngredientInfo("name", name)}
+            searchPlaceHolder="Search ingredients..."
+            buttonStyle={{
+              marginTop: 8,
+              borderRadius: 8,
+              backgroundColor: g.colors.primary,
+              height: 40,
+            }}
+            buttonTextStyle={{
+              color: "#fff",
+            }}
+            dropdownStyle={{
+              borderRadius: 8,
+              backgroundColor: g.colors.background,
+            }}
+            rowTextStyle={{ color: "#fff" }}
+          />
+        )}
+        <CheckBox
+          containerStyle={{
+            backgroundColor: g.colors.secondary,
+            marginRight: 0,
+          }}
+          size={28}
+          uncheckedColor={g.colors.background}
+          checkedColor={g.colors.primary}
+          onPress={() =>
+            setIngredientInfo({
+              ...ingredientInfo,
+              custom: !ingredientInfo.custom,
+            })
+          }
+          checked={ingredientInfo.custom}
+          title="Custom"
+          textStyle={{
+            fontSize: 20,
+            fontWeight: "normal",
+          }}
+        />
+      </View>
+      <Text style={{ marginTop: 8 }}>Amount:</Text>
       <View
         style={{
           flexDirection: "row",
@@ -151,13 +204,14 @@ const IngredientContainer = ({
           }}
           defaultValue={ingredientInfo.unit}
           defaultButtonText="Select"
+          buttonTextStyle={{ color: "#fff" }}
           buttonTextAfterSelection={(selectedItem) => selectedItem}
           onSelect={(selectedItem) =>
             updateIngredientInfo("unit", selectedItem)
           }
         />
       </View>
-      <Text>Type:</Text>
+      <Text style={{ marginTop: 8 }}>Type:</Text>
       <RadioButtonsGroup
         radioButtons={radioButtons}
         onPress={(radioButtonsArray) => {
@@ -211,6 +265,10 @@ const MyCocktailEditor = ({ route, navigation }) => {
     setTempIngredients(indexedIngredients);
   }, []);
 
+  useEffect(() => {
+    saveIngredients();
+  }, [tempIngredients]);
+
   const updateEditingCocktailInfo = (value, name) => {
     setEditingCocktailInfo({ ...editingCocktailInfo, [name]: value });
   };
@@ -222,10 +280,14 @@ const MyCocktailEditor = ({ route, navigation }) => {
         name: ingredient.name,
         unit: ingredient.unit,
         amount: ingredient.amount,
+        custom: ingredient.custom,
+        type: ingredient.type,
       };
-      trimmedIngredients.push(trimmedIngredient);
+      if (trimmedIngredient.name) {
+        trimmedIngredients.push(trimmedIngredient);
+      }
     });
-    setNewCocktail({
+    setEditingCocktailInfo({
       ...editingCocktailInfo,
       requiredIngredients: trimmedIngredients,
     });

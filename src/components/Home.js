@@ -1,36 +1,114 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, Text, View, ToastAndroid } from "react-native";
 import { Button } from "@rneui/base/dist/Button";
 import { AuthContext } from "../providers/AuthProvider";
+import g from "../styles/styles";
 import * as SecureStore from "expo-secure-store";
 import DraggableView from "../shared/DraggableView";
+import { AirtableContext } from "../providers/AirtableProvider";
+import { Card } from "@rneui/base";
 
 const Home = () => {
-  const { user } = useContext(AuthContext);
-  const [draggableArray, setDraggableArray] = useState([
-    "blue",
-    "yellow",
-    "red",
-  ]);
+  const [randomStockCocktail, setRandomStockCocktail] = useState({});
+  const [userMostRecentCocktail, setUserMostRecentCocktail] = useState({});
 
-  const getToken = async () => {
-    const token = await SecureStore.getItemAsync("token");
-    console.log(token);
+  const { user } = useContext(AuthContext);
+  const { cocktails, cocktailLoading } = useContext(AirtableContext);
+
+  useEffect(() => {
+    const randomCocktail = getRandomStockCocktail();
+    const userCocktail = getUserMostRecentCocktail();
+
+    setRandomStockCocktail(randomCocktail);
+    setUserMostRecentCocktail(userCocktail);
+  }, []);
+  // DRAGGABLE EXPERIMENT //
+  // const [draggableArray, setDraggableArray] = useState([
+  //   "blue",
+  //   "yellow",
+  //   "red",
+  // ]);
+  // const renderDraggableArray = draggableArray.map((color, index) => {
+  //   return <DraggableView key={index} color={color} />;
+  // });
+
+  const getRandomStockCocktail = () => {
+    const randNum = Math.floor(Math.random() * cocktails.length);
+    return cocktails[randNum];
   };
 
-  const renderDraggableArray = draggableArray.map((color, index) => {
-    return <DraggableView key={index} color={color} />;
-  });
+  // Use the date?
+  const getUserMostRecentCocktail = () => {
+    const recentUserCocktail =
+      user.userCocktails[user.userCocktails.length - 1];
+    console.log(recentUserCocktail);
+    return recentUserCocktail;
+  };
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.text}>
+      <Text style={styles.greetingText}>
         {user ? `Hello, ${user.username}!` : "Home Bartender"}
       </Text>
-      <Button onPress={() => ToastAndroid.show("A Toast!", ToastAndroid.LONG)}>
-        Press
-      </Button> */}
-      {renderDraggableArray}
+      <View style={styles.recommendationContainer}>
+        <View style={styles.insideRecommendationContainer}>
+          <Text style={styles.text}>Why not try this cocktail today?</Text>
+          <Card containerStyle={styles.card}>
+            <Card.Title style={styles.cardTitle}>
+              {randomStockCocktail.name}
+            </Card.Title>
+            <Card.Divider />
+            <Text style={styles.cardSubheaderText}>Ingredients:</Text>
+            <View style={{ marginTop: 8 }}>
+              {randomStockCocktail.requiredIngredients?.map(
+                (ingredient, index) => {
+                  return (
+                    <Text style={styles.cardText} key={index}>
+                      - {ingredient}
+                    </Text>
+                  );
+                }
+              )}
+            </View>
+            <Text style={styles.cardSubheaderText}>Recipe:</Text>
+            <Text style={{ ...styles.cardText, marginTop: 8 }}>
+              {randomStockCocktail.recipe}
+            </Text>
+          </Card>
+        </View>
+        {userMostRecentCocktail && (
+          <View style={styles.insideRecommendationContainer}>
+            <Text style={styles.text}>Your most recent creation.</Text>
+            <Card containerStyle={styles.card}>
+              <Card.Title style={styles.cardTitle}>
+                {userMostRecentCocktail.name}
+              </Card.Title>
+              <Card.Divider />
+              <Text style={styles.cardSubheaderText}>Ingredients:</Text>
+              <View style={{ marginTop: 8 }}>
+                {userMostRecentCocktail.requiredIngredients?.map(
+                  (ingredient, index) => {
+                    const ingredientString =
+                      `- ${ingredient.amount} ${ingredient.unit} ${ingredient.name}`.replace(
+                        /  +/g,
+                        " "
+                      );
+                    return (
+                      <Text style={styles.cardText} key={index}>
+                        {ingredientString}
+                      </Text>
+                    );
+                  }
+                )}
+              </View>
+              <Text style={styles.cardSubheaderText}>Recipe:</Text>
+              <Text style={{ ...styles.cardText, marginTop: 8 }}>
+                {userMostRecentCocktail.recipe}
+              </Text>
+            </Card>
+          </View>
+        )}
+      </View>
     </View>
   );
 };
@@ -38,12 +116,47 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#262626",
+    backgroundColor: g.colors.background,
+    padding: 16,
+  },
+  greetingText: {
+    color: g.colors.primary,
+    fontSize: 32,
+    marginLeft: "auto",
+  },
+  recommendationContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginTop: 16,
+  },
+  insideRecommendationContainer: {
+    width: "50%",
+    flexDirection: "column",
+    marginTop: 16,
+    marginHorizontal: 16,
     alignItems: "center",
-    justifyContent: "center",
   },
   text: {
-    color: "red",
+    color: g.colors.secondary,
+    fontSize: 24,
+    marginHorizontal: 8,
+  },
+  card: {
+    borderRadius: 8,
+    marginHorizontal: 16,
+    backgroundColor: g.colors.primary,
+    borderColor: g.colors.secondary,
+  },
+  cardTitle: {
+    color: "#fff",
+    fontSize: 24,
+  },
+  cardSubheaderText: {
+    fontSize: 20,
+    marginTop: 8,
+  },
+  cardText: {
+    fontSize: 16,
   },
 });
 

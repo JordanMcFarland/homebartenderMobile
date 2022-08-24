@@ -7,7 +7,10 @@ export const AirtableContext = React.createContext({});
 export const AirtableProvider = ({ children }) => {
   const [cocktails, setCocktails] = useState([]);
   const [ingredients, setIngredients] = useState({});
+  const [uncategorizedIngredients, setUncategorizedIngredients] = useState([]);
   const [ingredientCategories, setIngredientCategories] = useState([]);
+  const [cocktailsLoading, setCocktailsLoading] = useState(true);
+  const [ingredientsLoading, setIngredientsLoading] = useState(true);
 
   useEffect(() => {
     const fetchCocktailAirTable = async () => {
@@ -28,13 +31,12 @@ export const AirtableProvider = ({ children }) => {
           })
           .sort((a, b) => (a.name > b.name ? 1 : -1));
         setCocktails(cocktailList);
+        setCocktailsLoading(false);
       } catch (e) {
         console.error(e);
       }
     };
-    if (!cocktails.length) {
-      fetchCocktailAirTable();
-    }
+    fetchCocktailAirTable();
   }, []);
 
   useEffect(() => {
@@ -44,10 +46,13 @@ export const AirtableProvider = ({ children }) => {
 
         // Create a list object with {category: ingredient array} pairs
         const listObj = {};
-        //console.log(list);
+        const uncategorizedList = [];
+
         list.records.forEach((record) => {
           const _id = record.id;
           const { type, name } = record.fields;
+
+          uncategorizedList.push(name);
 
           if (!listObj[type]) {
             listObj[type] = [];
@@ -65,8 +70,10 @@ export const AirtableProvider = ({ children }) => {
         });
 
         // Set ingredient & ingredient category state
+        setUncategorizedIngredients(uncategorizedList.sort());
         setIngredients((prevState) => ({ ...prevState, ...listObj }));
         setIngredientCategories((prevState) => [...prevState, ...keyArr]);
+        setIngredientsLoading(false);
       } catch (e) {
         console.error(e);
         setErr(true);
@@ -81,8 +88,11 @@ export const AirtableProvider = ({ children }) => {
         cocktails,
         ingredients,
         ingredientCategories,
+        uncategorizedIngredients,
         setCocktails,
         setIngredients,
+        cocktailsLoading,
+        ingredientsLoading,
       }}
     >
       {children}

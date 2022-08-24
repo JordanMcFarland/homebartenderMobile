@@ -19,6 +19,7 @@ import RadioButtonsGroup from "react-native-radio-buttons-group";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { CheckBox } from "@rneui/base";
 
 const IngredientContainer = ({
   deleteIngredient,
@@ -46,8 +47,11 @@ const IngredientContainer = ({
     amount: "",
     unit: "",
     type: "Core Ingredient",
+    custom: false,
   });
-  const units = ["oz", "tsp", "tbs", "dash"];
+
+  const { uncategorizedIngredients } = useContext(AirtableContext);
+  const units = ["oz", "tsp", "tbs", "dash", "dashes"];
 
   // FUNCTIONS
   useEffect(() => {
@@ -110,12 +114,59 @@ const IngredientContainer = ({
       }}
     >
       <Text>Ingredient Name:</Text>
-      <TextInput
-        style={{ ...styles.textInput, marginTop: 8 }}
-        onFocus={() => console.log(ingredientInfo)}
-        value={ingredientInfo.name}
-        onChangeText={(name) => updateIngredientInfo("name", name)}
-      />
+      <View style={{ flexDirection: "row" }}>
+        {ingredientInfo.custom ? (
+          <TextInput
+            style={{ ...styles.textInput, marginTop: 8, width: "60%" }}
+            onFocus={() => console.log(ingredientInfo)}
+            value={ingredientInfo.name}
+            onChangeText={(name) => updateIngredientInfo("name", name)}
+          />
+        ) : (
+          <SelectDropdown
+            data={uncategorizedIngredients}
+            search={true}
+            defaultValue={ingredientInfo.name}
+            onSelect={(name) => updateIngredientInfo("name", name)}
+            searchPlaceHolder="Search ingredients..."
+            buttonStyle={{
+              marginTop: 8,
+              borderRadius: 8,
+              backgroundColor: g.colors.primary,
+              height: 40,
+            }}
+            buttonTextStyle={{
+              color: "#fff",
+            }}
+            dropdownStyle={{
+              borderRadius: 8,
+              backgroundColor: g.colors.background,
+            }}
+            rowTextStyle={{ color: "#fff" }}
+          />
+        )}
+        <CheckBox
+          containerStyle={{
+            backgroundColor: g.colors.secondary,
+            marginRight: 0,
+          }}
+          size={28}
+          uncheckedColor={g.colors.background}
+          checkedColor={g.colors.primary}
+          onPress={() =>
+            setIngredientInfo({
+              ...ingredientInfo,
+              custom: !ingredientInfo.custom,
+            })
+          }
+          checked={ingredientInfo.custom}
+          title="Custom"
+          textStyle={{
+            fontSize: 20,
+            fontWeight: "normal",
+          }}
+        />
+      </View>
       <Text>Amount:</Text>
       <View
         style={{
@@ -191,7 +242,6 @@ const CocktailCreator = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [recipeInputHeight, setRecipeInputHeight] = useState(40);
 
-  const { ingredients, ingredientCategories } = useContext(AirtableContext);
   const { handlePostUserCocktail } = useContext(AuthContext);
 
   useEffect(() => {
@@ -209,6 +259,8 @@ const CocktailCreator = ({ navigation }) => {
         name: ingredient.name,
         unit: ingredient.unit,
         amount: ingredient.amount,
+        custom: ingredient.custom,
+        type: ingredient.type,
       };
       trimmedIngredients.push(trimmedIngredient);
     });

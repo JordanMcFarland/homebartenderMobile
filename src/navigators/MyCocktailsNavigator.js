@@ -55,6 +55,7 @@ const MyCocktailsNavigator = ({ navigation }) => {
         name="MyCocktailInfo"
         component={MyCocktailInfo}
         options={({ navigation }) => ({
+          title: "My Cocktails",
           headerLeft: () => (
             <Pressable onPress={() => navigation.pop()}>
               <FontAwesomeIcon

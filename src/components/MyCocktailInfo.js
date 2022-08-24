@@ -81,6 +81,16 @@ const MyCocktailInfo = ({ route, navigation }) => {
             }}
           />
         )}
+        <Text
+          style={{
+            ...styles.text,
+            marginTop: 15,
+            marginBottom: 10,
+            fontWeight: "bold",
+          }}
+        >
+          Ingredients:
+        </Text>
         {cocktail.requiredIngredients.map((ingredient, index) => {
           const ingredientString =
             `- ${ingredient.amount} ${ingredient.unit} ${ingredient.name}`.replace(
