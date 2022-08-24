@@ -10,9 +10,12 @@ export const fetchCocktails = async () => {
       },
     }
   );
-  const list = await response.json();
+  if (response.ok) {
+    const list = await response.json();
 
-  return list;
+    return list;
+  }
+  throw new Error("Could not fetch cocktails");
 };
 
 export const fetchIngredients = async () => {
@@ -24,7 +27,10 @@ export const fetchIngredients = async () => {
       },
     }
   );
-  const list = await response.json();
+  if (response.ok) {
+    const list = await response.json();
 
-  return list;
+    return list;
+  }
+  throw new Error("Could not fetch ingredients");
 };

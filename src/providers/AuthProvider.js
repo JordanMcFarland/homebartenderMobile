@@ -5,6 +5,8 @@ import {
   loginUser,
   postCocktail,
   updateUserCocktail,
+  postUserFavorite,
+  deleteUserFavorite,
 } from "../helpers/homebartenderServer";
 import * as SecureStore from "expo-secure-store";
 
@@ -65,6 +67,18 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
   };
 
+  const handlePostUserFavorite = async (cocktailInfo) => {
+    const response = await postUserFavorite(cocktailInfo);
+    const userData = { ...user, userFavorites: response.userFavorites };
+    setUser(userData);
+  };
+
+  const handleDeleteUserFavorite = async (cocktailInfo) => {
+    const response = await deleteUserFavorite(cocktailInfo);
+    const userData = { ...user, userFavorites: response.userFavorites };
+    setUser(userData);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -90,6 +104,8 @@ export const AuthProvider = ({ children }) => {
         handlePostUserCocktail,
         handleDeleteUserCocktail,
         handleUpdateUserCocktail,
+        handlePostUserFavorite,
+        handleDeleteUserFavorite,
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Pressable,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   View,
   Image,
   Vibration,
+  Alert,
 } from "react-native";
 import { Card } from "@rneui/themed";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -21,14 +22,30 @@ import { Link } from "@react-navigation/native";
 const MyCocktailInfo = ({ route, navigation }) => {
   // Temp state solution
   const [favorite, setFavorite] = useState(false);
-  const { handleDeleteUserCocktail } = useContext(AuthContext);
+  const { user, handlePostUserFavorite, handleDeleteUserFavorite } =
+    useContext(AuthContext);
 
   const cocktail = route.params;
 
-  const onDeleteUserCocktail = async () => {
+  useEffect(() => {
+    console.log(user.userFavorites);
+    const isFavorite = user.userFavorites.some(
+      (fav) => fav._id === cocktail._id
+    );
+    setFavorite(isFavorite);
+  }, [user]);
+
+  const toggleFavorite = () => {
     try {
-      await handleDeleteUserCocktail(cocktail);
-      navigation.navigate("My Cocktails");
+      if (
+        user.userFavorites.some((favorite) => favorite._id === cocktail._id)
+      ) {
+        handleDeleteUserFavorite({
+          _id: cocktail._id,
+          userId: cocktail.userId,
+        });
+      } else
+        handlePostUserFavorite({ _id: cocktail._id, userId: cocktail.userId });
     } catch (err) {
       alert(err);
     }
@@ -45,7 +62,7 @@ const MyCocktailInfo = ({ route, navigation }) => {
             if (!favorite) {
               Vibration.vibrate(50);
             }
-            setFavorite(!favorite);
+            toggleFavorite();
           }}
           style={{ position: "absolute", right: 10, top: -5 }}
         >

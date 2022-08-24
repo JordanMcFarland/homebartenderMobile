@@ -228,67 +228,60 @@ export const getUserFavorites = async () => {
 };
 
 export const postUserFavorite = async (cocktailInfo) => {
-  try {
-    const token = getToken();
+  const token = await getToken();
 
-    const response = await fetch(baseUrl + "users/favorites", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: cocktailInfo,
-    });
+  const response = await fetch(baseUrl + "users/favorites", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(cocktailInfo),
+  });
 
-    if (!response.ok) {
-      console.log(response);
-      const error = response;
+  const json = await response.json();
+  if (response.ok) {
+    if (json.err) {
+      const error = json.err;
       throw error;
     }
 
-    const json = await response.json();
-
-    if (json) {
+    if (json.userFavorites) {
       return json;
-    } else {
-      const error = new Error("Error " + json.status);
-      error.response = json;
-      throw error;
     }
-  } catch (err) {
-    return err;
+  } else {
+    const error = new Error("Error " + json.status);
+    error.response = json;
+    throw error;
   }
 };
 
 export const deleteUserFavorite = async (cocktailInfo) => {
-  try {
-    const token = getToken();
+  const token = await getToken();
 
-    const response = await fetch(baseUrl + "users/favorites", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: cocktailInfo,
-    });
+  const response = await fetch(baseUrl + "users/favorites", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(cocktailInfo),
+  });
 
-    if (!response.ok) {
-      const error = response;
+  const json = await response.json();
+  if (response.ok) {
+    if (json.err) {
+      const error = json.err;
       throw error;
     }
 
-    const json = await response.json();
-
-    if (json) {
+    if (json.userFavorites) {
       return json;
-    } else {
-      const error = new Error("Error " + json.status);
-      error.response = json;
-      throw error;
     }
-  } catch (err) {
-    return err;
+  } else {
+    const error = new Error("Error " + json.status);
+    error.response = json;
+    throw error;
   }
 };
 

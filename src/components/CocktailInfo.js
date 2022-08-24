@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Pressable,
   StyleSheet,
@@ -11,12 +11,36 @@ import { Card } from "@rneui/themed";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
+import { AuthContext } from "../providers/AuthProvider";
 
 const CocktailInfo = ({ route }) => {
   // Temp state solution
   const [favorite, setFavorite] = useState(false);
+  const { user, handlePostUserFavorite, handleDeleteUserFavorite } =
+    useContext(AuthContext);
 
   const cocktail = route.params;
+
+  useEffect(() => {
+    const isFavorite = user.userFavorites.some(
+      (fav) => fav._id === cocktail._id.toString()
+    );
+    setFavorite(isFavorite);
+  }, [user]);
+
+  const toggleFavorite = (cocktail) => {
+    try {
+      if (
+        user.userFavorites.some(
+          (favorite) => favorite._id === cocktail._id.toString()
+        )
+      ) {
+        handleDeleteUserFavorite({ _id: cocktail._id });
+      } else handlePostUserFavorite({ _id: cocktail._id });
+    } catch (err) {
+      alert(err);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -29,7 +53,7 @@ const CocktailInfo = ({ route }) => {
             if (!favorite) {
               Vibration.vibrate(50);
             }
-            setFavorite(!favorite);
+            toggleFavorite(cocktail);
           }}
           style={{ position: "absolute", right: 0, top: -5 }}
         >

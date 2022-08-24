@@ -1,5 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, Text, View, ToastAndroid } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ToastAndroid,
+  Dimensions,
+  ScrollView,
+} from "react-native";
 import { Button } from "@rneui/base/dist/Button";
 import { AuthContext } from "../providers/AuthProvider";
 import g from "../styles/styles";
@@ -17,11 +24,12 @@ const Home = () => {
 
   useEffect(() => {
     const randomCocktail = getRandomStockCocktail();
-    const userCocktail = getUserMostRecentCocktail();
-
     setRandomStockCocktail(randomCocktail);
-    setUserMostRecentCocktail(userCocktail);
-  }, []);
+    if (user) {
+      const userCocktail = getUserMostRecentCocktail();
+      setUserMostRecentCocktail(userCocktail);
+    }
+  }, [user]);
   // DRAGGABLE EXPERIMENT //
   // const [draggableArray, setDraggableArray] = useState([
   //   "blue",
@@ -41,16 +49,18 @@ const Home = () => {
   const getUserMostRecentCocktail = () => {
     const recentUserCocktail =
       user.userCocktails[user.userCocktails.length - 1];
-    console.log(recentUserCocktail);
     return recentUserCocktail;
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.greetingText}>
-        {user ? `Hello, ${user.username}!` : "Home Bartender"}
+        {user && `Hello, ${user.username}!`}
       </Text>
-      <View style={styles.recommendationContainer}>
+      <ScrollView
+        contentContainerStyle={styles.recommendationContainer}
+        style={{ marginTop: 8 }}
+      >
         <View style={styles.insideRecommendationContainer}>
           <Text style={styles.text}>Why not try this cocktail today?</Text>
           <Card containerStyle={styles.card}>
@@ -76,7 +86,7 @@ const Home = () => {
             </Text>
           </Card>
         </View>
-        {userMostRecentCocktail && (
+        {userMostRecentCocktail && user ? (
           <View style={styles.insideRecommendationContainer}>
             <Text style={styles.text}>Your most recent creation.</Text>
             <Card containerStyle={styles.card}>
@@ -107,8 +117,10 @@ const Home = () => {
               </Text>
             </Card>
           </View>
+        ) : (
+          <></>
         )}
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -117,20 +129,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: g.colors.background,
-    padding: 16,
   },
   greetingText: {
     color: g.colors.primary,
     fontSize: 32,
     marginLeft: "auto",
+    paddingRight: 16,
+    paddingTop: 16,
   },
   recommendationContainer: {
     flexDirection: "row",
+    flexWrap: "wrap",
     justifyContent: "space-evenly",
-    marginTop: 16,
+    paddingBottom: 16,
   },
   insideRecommendationContainer: {
-    width: "50%",
     flexDirection: "column",
     marginTop: 16,
     marginHorizontal: 16,
@@ -146,6 +159,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     backgroundColor: g.colors.primary,
     borderColor: g.colors.secondary,
+    width: 276,
   },
   cardTitle: {
     color: "#fff",

@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 
-const { width, height } = Dimensions.get("window");
+export const { width, height } = Dimensions.get("window");
 
 const xs = 4;
 const sm = 8;

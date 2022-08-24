@@ -20,6 +20,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { CheckBox } from "@rneui/base";
+import { width } from "../styles/styles";
 
 const IngredientContainer = ({
   deleteIngredient,
@@ -114,10 +115,15 @@ const IngredientContainer = ({
       }}
     >
       <Text>Ingredient Name:</Text>
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
         {ingredientInfo.custom ? (
           <TextInput
-            style={{ ...styles.textInput, marginTop: 8, width: "60%" }}
+            style={{
+              ...styles.textInput,
+              marginTop: 8,
+              width: width / 2,
+              marginHorizontal: 8,
+            }}
             onFocus={() => console.log(ingredientInfo)}
             value={ingredientInfo.name}
             onChangeText={(name) => updateIngredientInfo("name", name)}
@@ -131,9 +137,11 @@ const IngredientContainer = ({
             searchPlaceHolder="Search ingredients..."
             buttonStyle={{
               marginTop: 8,
+              marginHorizontal: 8,
               borderRadius: 8,
               backgroundColor: g.colors.primary,
               height: 40,
+              width: width / 2,
             }}
             buttonTextStyle={{
               color: "#fff",
@@ -148,7 +156,9 @@ const IngredientContainer = ({
         <CheckBox
           containerStyle={{
             backgroundColor: g.colors.secondary,
-            marginRight: 0,
+            paddingHorizontal: 0,
+            marginBottom: 0,
+            paddingBottom: 0,
           }}
           size={28}
           uncheckedColor={g.colors.background}
@@ -167,7 +177,7 @@ const IngredientContainer = ({
           }}
         />
       </View>
-      <Text>Amount:</Text>
+      <Text style={{ marginTop: 8 }}>Amount:</Text>
       <View
         style={{
           flexDirection: "row",
@@ -178,8 +188,7 @@ const IngredientContainer = ({
           keyboardType="number-pad"
           style={{
             ...styles.textInput,
-            width: "25%",
-            maxWidth: "50%",
+            width: width / 4,
             marginHorizontal: 8,
             marginTop: 8,
           }}
@@ -190,24 +199,24 @@ const IngredientContainer = ({
           buttonStyle={{
             borderRadius: 8,
             backgroundColor: g.colors.primary,
-            maxWidth: "50%",
+            width: width / 4,
             marginHorizontal: 8,
             marginTop: 8,
             height: 40,
           }}
           defaultButtonText="Select"
+          buttonTextStyle={{ color: "#fff" }}
           buttonTextAfterSelection={(selectedItem) => selectedItem}
           onSelect={(selectedItem) =>
             updateIngredientInfo("unit", selectedItem)
           }
         />
       </View>
-      <Text>Type:</Text>
+      <Text style={{ marginTop: 8 }}>Type:</Text>
       <RadioButtonsGroup
         radioButtons={radioButtons}
         onPress={(radioButtonsArray) => {
           onPressRadioButton(radioButtonsArray);
-          console.log();
         }}
         containerStyle={{ flexDirection: "row" }}
       />
