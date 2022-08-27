@@ -1,18 +1,19 @@
 import React from "react";
 import { Pressable } from "react-native";
-import CocktailDirectory from "../components/CocktailDirectory";
 import CocktailInfo from "../components/CocktailInfo";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faBars, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { CommonActions, StackActions } from "@react-navigation/native";
+import Favorites from "../components/Favorites";
+import MyCocktailInfo from "../components/MyCocktailInfo";
+import MyCocktailEditor from "../components/MyCocktailEditor";
 
 const Stack = createNativeStackNavigator();
 
-const CocktailNavigator = ({ navigation }) => {
+const FavoritesNavigator = ({ navigation }) => {
   return (
     <Stack.Navigator
-      initialRouteName="Cocktails"
+      initialRouteName="My Favorites"
       screenOptions={{
         headerStyle: {
           backgroundColor: "#262626",
@@ -27,8 +28,8 @@ const CocktailNavigator = ({ navigation }) => {
       }}
     >
       <Stack.Screen
-        name="Cocktails"
-        component={CocktailDirectory}
+        name="My Favorites"
+        component={Favorites}
         options={{
           headerLeft: () => (
             <Pressable onPress={() => navigation.toggleDrawer()}>
@@ -56,8 +57,39 @@ const CocktailNavigator = ({ navigation }) => {
           ),
         })}
       />
+      <Stack.Screen
+        name="MyCocktailInfo"
+        component={MyCocktailInfo}
+        options={({ navigation }) => ({
+          headerLeft: () => (
+            <Pressable onPress={() => navigation.pop()}>
+              <FontAwesomeIcon
+                icon={faArrowLeft}
+                size={24}
+                style={{ color: "#B70D29" }}
+              />
+            </Pressable>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="MyCocktailEditor"
+        component={MyCocktailEditor}
+        options={({ navigation }) => ({
+          title: "Cocktail Editor",
+          headerLeft: () => (
+            <Pressable onPress={() => navigation.pop()}>
+              <FontAwesomeIcon
+                icon={faArrowLeft}
+                size={24}
+                style={{ color: "#B70D29" }}
+              />
+            </Pressable>
+          ),
+        })}
+      />
     </Stack.Navigator>
   );
 };
 
-export default CocktailNavigator;
+export default FavoritesNavigator;

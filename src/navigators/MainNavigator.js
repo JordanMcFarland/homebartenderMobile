@@ -10,9 +10,11 @@ import { Pressable, Text } from "react-native";
 import CocktailNavigator from "./CocktailNavigator";
 import MyCocktailsNavigator from "./MyCocktailsNavigator";
 import LoginNavigator from "./LoginNavigator";
+import Favorites from "../components/Favorites";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../providers/AuthProvider";
+import FavoritesNavigator from "./FavoritesNavigator";
 
 const Drawer = createDrawerNavigator();
 
@@ -94,11 +96,18 @@ const MainNavigator = () => {
           options={{ title: "Login" }}
         />
       ) : (
-        <Drawer.Screen
-          name="MyCocktailsNavigator"
-          component={MyCocktailsNavigator}
-          options={{ title: "My Cocktails", headerShown: false }}
-        />
+        <>
+          <Drawer.Screen
+            name="MyCocktailsNavigator"
+            component={MyCocktailsNavigator}
+            options={{ title: "My Cocktails", headerShown: false }}
+          />
+          <Drawer.Screen
+            name="FavoritesNavigator"
+            component={FavoritesNavigator}
+            options={{ title: "My Favorites", headerShown: false }}
+          />
+        </>
       )}
     </Drawer.Navigator>
   );

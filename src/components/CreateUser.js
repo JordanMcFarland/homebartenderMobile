@@ -12,7 +12,6 @@ const CreateUser = ({ navigation }) => {
   const onCreateUserAccount = async () => {
     try {
       const response = await createUserAccount(newUserInfo);
-      console.log(response);
       if (!response.success) {
         const error = response.err.message;
         throw error;

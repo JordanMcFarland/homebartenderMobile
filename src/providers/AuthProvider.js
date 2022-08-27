@@ -54,7 +54,6 @@ export const AuthProvider = ({ children }) => {
       userCocktailId,
       editedUserCocktail
     );
-    console.log(response);
     ToastAndroid.show(
       `${editedUserCocktail.name} has been updated in your cocktail list`,
       ToastAndroid.SHORT

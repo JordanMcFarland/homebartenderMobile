@@ -56,8 +56,6 @@ const IngredientContainer = ({
   const units = ["oz", "tsp", "tbs", "dash", "dashes"];
 
   // FUNCTIONS
-  useEffect(() => console.log(ingredient), []);
-
   useEffect(() => {
     updateTempIngredients();
   }, [ingredientInfo]);
@@ -131,7 +129,6 @@ const IngredientContainer = ({
               width: width / 2,
               marginHorizontal: 8,
             }}
-            onFocus={() => console.log(ingredientInfo)}
             value={ingredientInfo.name}
             onChangeText={(name) => updateIngredientInfo("name", name)}
           />

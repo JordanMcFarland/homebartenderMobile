@@ -28,7 +28,6 @@ const MyCocktailInfo = ({ route, navigation }) => {
   const cocktail = route.params;
 
   useEffect(() => {
-    console.log(user.userFavorites);
     const isFavorite = user.userFavorites.some(
       (fav) => fav._id === cocktail._id
     );

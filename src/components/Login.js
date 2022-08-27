@@ -12,7 +12,7 @@ const Login = () => {
     try {
       await login(userInfo);
     } catch (err) {
-      console.log(err);
+      alert(err);
     }
   };
 

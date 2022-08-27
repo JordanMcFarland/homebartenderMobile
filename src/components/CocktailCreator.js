@@ -124,7 +124,6 @@ const IngredientContainer = ({
               width: width / 2,
               marginHorizontal: 8,
             }}
-            onFocus={() => console.log(ingredientInfo)}
             value={ingredientInfo.name}
             onChangeText={(name) => updateIngredientInfo("name", name)}
           />
@@ -382,7 +381,6 @@ const CocktailCreator = ({ navigation }) => {
               }}
               title="Submit"
               onPress={() => {
-                console.log(newCocktail);
                 onPostUserCocktail(newCocktail);
               }}
             />
