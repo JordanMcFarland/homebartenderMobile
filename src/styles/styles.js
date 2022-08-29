@@ -17,28 +17,31 @@ const colors = {
 
 // g is global
 const g = StyleSheet.create({
-  m1: {
-    margin: xs,
-  },
-  m2: {
-    margin: sm,
-  },
-  m3: {
-    margin: md,
-  },
-  m4: {
-    margin: lg,
-  },
-  m5: {
-    margin: xl,
-  },
-  m6: {
-    margin: xxl,
-  },
   colors: {
     primary: colors.primary,
     secondary: colors.secondary,
     background: colors.background,
+  },
+  margins: {
+    m1: xs,
+    m2: sm,
+    m3: md,
+    m4: lg,
+    m5: xl,
+    m6: xxl,
+  },
+  padding: {
+    p1: xs,
+    p2: sm,
+    p3: md,
+    p4: lg,
+    p5: xl,
+    p6: xxl,
+  },
+  borderRadius: {
+    r1: xs,
+    r2: sm,
+    r3: md,
   },
 });
 

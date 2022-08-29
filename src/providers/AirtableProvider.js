@@ -69,6 +69,8 @@ export const AirtableProvider = ({ children }) => {
           );
         });
 
+        console.log(listObj);
+
         // Set ingredient & ingredient category state
         setUncategorizedIngredients(uncategorizedList.sort());
         setIngredients((prevState) => ({ ...prevState, ...listObj }));

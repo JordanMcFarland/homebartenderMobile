@@ -10,7 +10,7 @@ import { Pressable, Text } from "react-native";
 import CocktailNavigator from "./CocktailNavigator";
 import MyCocktailsNavigator from "./MyCocktailsNavigator";
 import LoginNavigator from "./LoginNavigator";
-import Favorites from "../components/Favorites";
+import MyBarNavigator from "./MyBarNavigator";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../providers/AuthProvider";
@@ -106,6 +106,11 @@ const MainNavigator = () => {
             name="FavoritesNavigator"
             component={FavoritesNavigator}
             options={{ title: "My Favorites", headerShown: false }}
+          />
+          <Drawer.Screen
+            name="MyBarNavigator"
+            component={MyBarNavigator}
+            options={{ title: "My Bar", headerShown: false }}
           />
         </>
       )}

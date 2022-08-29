@@ -289,7 +289,7 @@ export const deleteUserFavorite = async (cocktailInfo) => {
 
 export const updateUserBar = async (updatedUserBar) => {
   try {
-    const token = getToken();
+    const token = await getToken();
 
     const response = await fetch(baseUrl + "users/userBar", {
       method: "PUT",

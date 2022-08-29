@@ -7,6 +7,7 @@ import {
   updateUserCocktail,
   postUserFavorite,
   deleteUserFavorite,
+  updateUserBar,
 } from "../helpers/homebartenderServer";
 import * as SecureStore from "expo-secure-store";
 
@@ -15,6 +16,7 @@ export const AuthContext = React.createContext({});
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [tempUserBar, setTempUserBar] = useState({});
 
   // Need to fix error handling
   const handlePostUserCocktail = async (newUserCocktail) => {
@@ -78,6 +80,17 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
   };
 
+  const handleUpdateUserBar = async () => {
+    try {
+      const response = await updateUserBar(tempUserBar);
+      console.log(response);
+      const userData = { ...user, userBar: response.updatedUserBar };
+      setUser(userData);
+    } catch (err) {
+      alert(err);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -100,11 +113,14 @@ export const AuthProvider = ({ children }) => {
         },
         loading,
         setLoading,
+        tempUserBar,
+        setTempUserBar,
         handlePostUserCocktail,
         handleDeleteUserCocktail,
         handleUpdateUserCocktail,
         handlePostUserFavorite,
         handleDeleteUserFavorite,
+        handleUpdateUserBar,
       }}
     >
       {children}
