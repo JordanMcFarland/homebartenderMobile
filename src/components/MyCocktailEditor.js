@@ -335,7 +335,7 @@ const MyCocktailEditor = ({ route, navigation }) => {
     if (validate()) {
       try {
         await handleUpdateUserCocktail(cocktail._id, editingCocktailInfo);
-        navigation.navigate("My Cocktails");
+        navigation.goBack();
       } catch (err) {
         alert(err);
       }
@@ -345,7 +345,7 @@ const MyCocktailEditor = ({ route, navigation }) => {
   const onDeleteUserCocktail = async () => {
     try {
       await handleDeleteUserCocktail(cocktail);
-      navigation.navigate("My Cocktails");
+      navigation.pop(2);
     } catch (err) {
       alert(err);
     }

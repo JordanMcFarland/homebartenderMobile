@@ -9,7 +9,7 @@ const MyCocktails = () => {
 
   const myCocktailDirectory = user.userCocktails.map((cocktail) => (
     <Card key={cocktail._id} containerStyle={styles.card}>
-      <Link to={{ screen: "MyCocktailInfo", params: cocktail }}>
+      <Link to={{ screen: "MyCocktailInfo", params: cocktail._id }}>
         <Text style={styles.text}>{cocktail.name}</Text>
       </Link>
     </Card>

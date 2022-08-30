@@ -6,33 +6,37 @@ import {
   View,
   Image,
   Vibration,
-  Alert,
 } from "react-native";
 import { Card } from "@rneui/themed";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import {
-  faHeart,
-  faTrashCan,
-  faEdit,
-} from "@fortawesome/free-regular-svg-icons";
+import { faHeart, faEdit } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../providers/AuthProvider";
 import { Link } from "@react-navigation/native";
 
-const MyCocktailInfo = ({ route, navigation }) => {
-  // Temp state solution
+const MyCocktailInfo = ({ route }) => {
   const [favorite, setFavorite] = useState(false);
+  const [cocktail, setCocktail] = useState({});
   const { user, handlePostUserFavorite, handleDeleteUserFavorite } =
     useContext(AuthContext);
 
-  const cocktail = route.params;
-
   useEffect(() => {
+    getCocktail();
+  }, [user]);
+
+  const getCocktail = () => {
+    const cocktailId = route.params;
+    const currentCocktail = user.userCocktails.filter(
+      (userCocktail) => userCocktail._id === cocktailId
+    )[0];
+
+    setCocktail(currentCocktail);
+
     const isFavorite = user.userFavorites.some(
-      (fav) => fav._id === cocktail._id
+      (fav) => fav._id === currentCocktail?._id
     );
     setFavorite(isFavorite);
-  }, [user]);
+  };
 
   const toggleFavorite = () => {
     try {
@@ -51,87 +55,89 @@ const MyCocktailInfo = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Card containerStyle={styles.card}>
-        <Card.FeaturedTitle style={styles.title}>
-          {cocktail.name}
-        </Card.FeaturedTitle>
-        <Pressable
-          onPress={() => {
-            if (!favorite) {
-              Vibration.vibrate(50);
-            }
-            toggleFavorite();
-          }}
-          style={{ position: "absolute", right: 10, top: -5 }}
-        >
-          <FontAwesomeIcon
-            icon={favorite ? faSolidHeart : faHeart}
-            size={32}
-            style={{
-              color: "#262626",
+    cocktail && (
+      <View style={styles.container}>
+        <Card containerStyle={styles.card}>
+          <Card.FeaturedTitle style={styles.title}>
+            {cocktail.name}
+          </Card.FeaturedTitle>
+          <Pressable
+            onPress={() => {
+              if (!favorite) {
+                Vibration.vibrate(50);
+              }
+              toggleFavorite();
             }}
-          />
-        </Pressable>
-        <Link
-          to={{ screen: "MyCocktailEditor", params: cocktail }}
-          style={{ position: "absolute", right: 64, top: -5 }}
-        >
-          <FontAwesomeIcon
-            icon={faEdit}
-            size={32}
+            style={{ position: "absolute", right: 10, top: -5 }}
+          >
+            <FontAwesomeIcon
+              icon={favorite ? faSolidHeart : faHeart}
+              size={32}
+              style={{
+                color: "#262626",
+              }}
+            />
+          </Pressable>
+          <Link
+            to={{ screen: "MyCocktailEditor", params: cocktail }}
+            style={{ position: "absolute", right: 64, top: -5 }}
+          >
+            <FontAwesomeIcon
+              icon={faEdit}
+              size={32}
+              style={{
+                color: "#262626",
+              }}
+            />
+          </Link>
+          <Card.Divider />
+          {cocktail.image && (
+            <Image
+              source={{ uri: cocktail.image }}
+              style={{
+                width: "75%",
+                height: "50%",
+                resizeMode: "cover",
+                alignSelf: "center",
+              }}
+            />
+          )}
+          <Text
             style={{
-              color: "#262626",
+              ...styles.text,
+              marginTop: 15,
+              marginBottom: 10,
+              fontWeight: "bold",
             }}
-          />
-        </Link>
-        <Card.Divider />
-        {cocktail.image && (
-          <Image
-            source={{ uri: cocktail.image }}
-            style={{
-              width: "75%",
-              height: "50%",
-              resizeMode: "cover",
-              alignSelf: "center",
-            }}
-          />
-        )}
-        <Text
-          style={{
-            ...styles.text,
-            marginTop: 15,
-            marginBottom: 10,
-            fontWeight: "bold",
-          }}
-        >
-          Ingredients:
-        </Text>
-        {cocktail.requiredIngredients.map((ingredient, index) => {
-          const ingredientString =
-            `- ${ingredient.amount} ${ingredient.unit} ${ingredient.name}`.replace(
-              /  +/g,
-              " "
+          >
+            Ingredients:
+          </Text>
+          {cocktail.requiredIngredients?.map((ingredient, index) => {
+            const ingredientString =
+              `- ${ingredient.amount} ${ingredient.unit} ${ingredient.name}`.replace(
+                /  +/g,
+                " "
+              );
+            return (
+              <Text style={styles.text} key={index}>
+                {ingredientString}
+              </Text>
             );
-          return (
-            <Text style={styles.text} key={index}>
-              {ingredientString}
-            </Text>
-          );
-        })}
-        <Text
-          style={{
-            ...styles.text,
-            marginTop: 15,
-            marginBottom: 10,
-            fontWeight: "bold",
-          }}
-        >
-          Recipe:
-        </Text>
-        <Text style={styles.text}>{cocktail.recipe}</Text>
-      </Card>
-    </View>
+          })}
+          <Text
+            style={{
+              ...styles.text,
+              marginTop: 15,
+              marginBottom: 10,
+              fontWeight: "bold",
+            }}
+          >
+            Recipe:
+          </Text>
+          <Text style={styles.text}>{cocktail.recipe}</Text>
+        </Card>
+      </View>
+    )
   );
 };
 

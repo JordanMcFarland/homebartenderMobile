@@ -12,21 +12,37 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../providers/AuthProvider";
+import { AirtableContext } from "../providers/AirtableProvider";
 
 const CocktailInfo = ({ route }) => {
   // Temp state solution
   const [favorite, setFavorite] = useState(false);
+  const [cocktail, setCocktail] = useState({});
   const { user, handlePostUserFavorite, handleDeleteUserFavorite } =
     useContext(AuthContext);
-
-  const cocktail = route.params;
+  const { cocktails } = useContext(AirtableContext);
 
   useEffect(() => {
+    getCocktail();
+    // const isFavorite = user.userFavorites.some(
+    //   (fav) => fav._id === cocktail._id.toString()
+    // );
+    // setFavorite(isFavorite);
+  }, [user]);
+
+  const getCocktail = () => {
+    const cocktailId = route.params;
+    const currentCocktail = cocktails.filter(
+      (stockCocktail) => stockCocktail._id === cocktailId
+    )[0];
+
+    setCocktail(currentCocktail);
+
     const isFavorite = user.userFavorites.some(
-      (fav) => fav._id === cocktail._id.toString()
+      (fav) => fav._id === currentCocktail._id.toString()
     );
     setFavorite(isFavorite);
-  }, [user]);
+  };
 
   const toggleFavorite = (cocktail) => {
     try {
@@ -87,7 +103,7 @@ const CocktailInfo = ({ route }) => {
         >
           Ingredients:
         </Text>
-        {cocktail.requiredIngredients.map((ingredient, index) => {
+        {cocktail.requiredIngredients?.map((ingredient, index) => {
           return (
             <Text style={styles.text} key={index}>
               {ingredient}

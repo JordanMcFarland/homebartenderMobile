@@ -83,7 +83,6 @@ export const AuthProvider = ({ children }) => {
   const handleUpdateUserBar = async () => {
     try {
       const response = await updateUserBar(tempUserBar);
-      console.log(response);
       const userData = { ...user, userBar: response.updatedUserBar };
       setUser(userData);
     } catch (err) {

@@ -11,7 +11,7 @@ const CocktailDirectory = () => {
 
   const cocktailDirectory = cocktails.map((cocktail) => (
     <Card key={cocktail._id} containerStyle={styles.card}>
-      <Link to={{ screen: "CocktailInfo", params: cocktail }}>
+      <Link to={{ screen: "CocktailInfo", params: cocktail._id }}>
         <Text style={styles.text}>{cocktail.name}</Text>
       </Link>
     </Card>

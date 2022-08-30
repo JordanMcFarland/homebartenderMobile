@@ -4,7 +4,7 @@ import { Button } from "@rneui/base";
 import g from "../styles/styles";
 import { AuthContext } from "../providers/AuthProvider";
 
-const MyBar = () => {
+const MyBar = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [userBarCategories, setUserBarCategories] = useState([]);
 
@@ -29,19 +29,22 @@ const MyBar = () => {
       );
     }
   });
+
   return (
     <View style={styles.container}>
       <Button
         title="What can I make?"
-        onPress={() => console.log("navigate to display of what we can make!")}
+        onPress={() => navigation.navigate("Craftable Cocktails")}
         containerStyle={styles.button}
       />
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.mainScrollView}
-      >
-        {renderMyBar}
-      </ScrollView>
+      {user.userBar && (
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.mainScrollView}
+        >
+          {renderMyBar}
+        </ScrollView>
+      )}
     </View>
   );
 };

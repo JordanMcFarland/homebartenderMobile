@@ -4,6 +4,8 @@ import { Text, ScrollView, StyleSheet, Pressable } from "react-native";
 import { AuthContext } from "../providers/AuthProvider";
 import { AirtableContext } from "../providers/AirtableProvider";
 import { Card } from "@rneui/base/dist/Card";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 
 const Favorites = ({ navigation }) => {
   const { user } = useContext(AuthContext);
@@ -33,16 +35,22 @@ const Favorites = ({ navigation }) => {
   const renderFavorites = favorites.map((fav) => {
     return (
       <Card key={fav._id} containerStyle={styles.card}>
+        {fav.userId && (
+          <FontAwesomeIcon
+            icon={faUser}
+            style={{ position: "absolute", right: 0 }}
+          />
+        )}
         <Link
           to={
             fav.userId
               ? {
                   screen: "MyCocktailInfo",
-                  params: fav,
+                  params: fav._id,
                 }
               : {
                   screen: "CocktailInfo",
-                  params: fav,
+                  params: fav._id,
                 }
           }
         >
