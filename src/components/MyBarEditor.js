@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
-import { ScrollView, View, Text, StyleSheet } from "react-native";
+import { ScrollView, View } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import { CheckBox } from "@rneui/base/dist/CheckBox";
 import { AirtableContext } from "../providers/AirtableProvider";
@@ -46,53 +46,39 @@ const MyBarEditor = () => {
   const renderIngredients = ingredients[currentCategory].map((ingredient) => {
     return (
       <CheckBox
-        containerStyle={styles.checkboxContainer}
+        containerStyle={g.br2}
         title={ingredient.name}
         key={ingredient._id}
         checked={tempUserBar[currentCategory]?.some(
           (ing) => ing._id === ingredient._id
         )}
         onPress={() => toggleIngredient(ingredient)}
-        checkedColor={g.colors.primary}
+        checkedColor={g.primary.color}
+        uncheckedColor={g.dark.color}
       />
     );
   });
 
   return (
-    <View style={styles.container}>
+    <View style={[g.bg.dark, { flex: 1 }]}>
       <SelectDropdown
         data={categories}
         defaultValue={currentCategory}
         onSelect={(option) => updateCurrentCategory(option)}
-        buttonStyle={styles.dropDownButton}
+        buttonStyle={{
+          marginTop: g.mt2.marginTop,
+          marginHorizontal: g.mh2.marginHorizontal,
+          borderRadius: g.br2.borderRadius,
+          backgroundColor: g.bg.primary.backgroundColor,
+          alignSelf: "center",
+          height: 40,
+        }}
       />
-      <ScrollView style={styles.scrollView}>{renderIngredients}</ScrollView>
+      <ScrollView style={[g.bg.secondary, g.m2, g.pt1, g.br2]}>
+        {renderIngredients}
+      </ScrollView>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: g.colors.background,
-    flex: 1,
-  },
-  scrollView: {
-    backgroundColor: g.colors.secondary,
-    margin: g.margins.m2,
-    paddingTop: g.padding.p1,
-    borderRadius: g.borderRadius.r2,
-  },
-  dropDownButton: {
-    alignSelf: "center",
-    marginTop: g.margins.m2,
-    marginHorizontal: g.margins.m2,
-    borderRadius: g.borderRadius.r2,
-    backgroundColor: g.colors.primary,
-    height: 40,
-  },
-  checkboxContainer: {
-    borderRadius: g.borderRadius.r2,
-  },
-});
 
 export default MyBarEditor;

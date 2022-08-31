@@ -7,25 +7,14 @@ import CocktailInfo from "../components/CocktailInfo";
 import MyCocktailInfo from "../components/MyCocktailInfo";
 import MyCocktailEditor from "../components/MyCocktailEditor";
 import { Pressable, Text } from "react-native";
-import { faBars, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { AuthContext } from "../providers/AuthProvider";
+import BackArrow from "./components/BackArrow";
 import g from "../styles/styles";
 
 const Stack = createNativeStackNavigator();
-
-const BackArrow = ({ navigation }) => {
-  return (
-    <Pressable onPress={() => navigation.pop()}>
-      <FontAwesomeIcon
-        icon={faArrowLeft}
-        size={24}
-        style={{ color: g.colors.primary }}
-      />
-    </Pressable>
-  );
-};
 
 const MyBarNavigator = ({ navigation }) => {
   const { handleUpdateUserBar } = useContext(AuthContext);
@@ -33,14 +22,8 @@ const MyBarNavigator = ({ navigation }) => {
     <Stack.Navigator
       initialRouteName="My Bar"
       screenOptions={{
-        headerStyle: {
-          backgroundColor: "#262626",
-        },
-        headerTitleStyle: {
-          color: "#B70D29",
-          fontSize: 28,
-          justifyContent: "center",
-        },
+        headerStyle: g.bg.dark,
+        headerTitleStyle: [g.primary, g.h2, { justifyContent: "center" }],
         headerTitleAlign: "center",
         animation: "none",
       }}
@@ -51,20 +34,12 @@ const MyBarNavigator = ({ navigation }) => {
         options={{
           headerLeft: () => (
             <Pressable onPress={() => navigation.toggleDrawer()}>
-              <FontAwesomeIcon
-                icon={faBars}
-                size={24}
-                style={{ color: "#B70D29" }}
-              />
+              <FontAwesomeIcon icon={faBars} size={24} style={g.primary} />
             </Pressable>
           ),
           headerRight: () => (
             <Pressable onPress={() => navigation.navigate("My Bar Editor")}>
-              <FontAwesomeIcon
-                icon={faEdit}
-                size={24}
-                style={{ color: "#B70D29" }}
-              />
+              <FontAwesomeIcon icon={faEdit} size={24} style={g.primary} />
             </Pressable>
           ),
         }}
@@ -76,15 +51,13 @@ const MyBarNavigator = ({ navigation }) => {
           headerLeft: () => <BackArrow navigation={navigation} />,
           headerRight: () => (
             <Pressable
-              style={{ padding: g.padding.p3 }}
+              style={g.p3}
               onPress={() => {
                 handleUpdateUserBar();
                 navigation.pop();
               }}
             >
-              <Text style={{ color: g.colors.primary, fontSize: 16 }}>
-                Save
-              </Text>
+              <Text style={[g.primary, g.h5]}>Save</Text>
             </Pressable>
           ),
         })}

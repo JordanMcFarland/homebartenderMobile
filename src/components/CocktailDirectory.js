@@ -1,18 +1,22 @@
-import React, { useContext, useEffect } from "react";
-import { ActivityIndicator, StyleSheet, Text, ScrollView } from "react-native";
+import React, { useContext } from "react";
+import { ActivityIndicator, Text, ScrollView } from "react-native";
 import { AirtableContext } from "../providers/AirtableProvider";
 import { AuthContext } from "../providers/AuthProvider";
 import { Card } from "@rneui/themed";
 import { Link } from "@react-navigation/native";
+import g from "../styles/styles";
 
 const CocktailDirectory = () => {
   const { cocktails } = useContext(AirtableContext);
   const { loading } = useContext(AuthContext);
 
   const cocktailDirectory = cocktails.map((cocktail) => (
-    <Card key={cocktail._id} containerStyle={styles.card}>
+    <Card
+      key={cocktail._id}
+      containerStyle={[g.bg.primary, g.bdc.secondary, g.br3]}
+    >
       <Link to={{ screen: "CocktailInfo", params: cocktail._id }}>
-        <Text style={styles.text}>{cocktail.name}</Text>
+        <Text style={[g.h5, { fontWeight: "bold" }]}>{cocktail.name}</Text>
       </Link>
     </Card>
   ));
@@ -20,12 +24,10 @@ const CocktailDirectory = () => {
   if (loading) {
     return (
       <View
-        style={{
-          flex: 1,
-          backgroundColor: "#fff",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+        style={[
+          g.bg.white,
+          { flex: 1, alignItems: "center", justifyContent: "center" },
+        ]}
       >
         <ActivityIndicator size="large" />
       </View>
@@ -33,31 +35,12 @@ const CocktailDirectory = () => {
   } else
     return (
       <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainerStyle}
+        style={[g.bg.dark, { flex: 1 }]}
+        contentContainerStyle={g.pb3}
       >
         {cocktails ? cocktailDirectory : ""}
       </ScrollView>
     );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#262626",
-  },
-  contentContainerStyle: {
-    paddingBottom: 16,
-  },
-  card: {
-    backgroundColor: "#B70D29",
-    borderColor: "#505050",
-    borderRadius: 16,
-  },
-  text: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
 
 export default CocktailDirectory;

@@ -5,7 +5,8 @@ import CocktailInfo from "../components/CocktailInfo";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faBars, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { CommonActions, StackActions } from "@react-navigation/native";
+import BackArrow from "./components/BackArrow";
+import g from "../styles/styles";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,14 +15,8 @@ const CocktailNavigator = ({ navigation }) => {
     <Stack.Navigator
       initialRouteName="Cocktails"
       screenOptions={{
-        headerStyle: {
-          backgroundColor: "#262626",
-        },
-        headerTitleStyle: {
-          color: "#B70D29",
-          fontSize: 28,
-          justifyContent: "center",
-        },
+        headerStyle: g.bg.dark,
+        headerTitleStyle: [g.primary, g.h2, { justifyContent: "center" }],
         headerTitleAlign: "center",
         animation: "none",
       }}
@@ -32,11 +27,7 @@ const CocktailNavigator = ({ navigation }) => {
         options={{
           headerLeft: () => (
             <Pressable onPress={() => navigation.toggleDrawer()}>
-              <FontAwesomeIcon
-                icon={faBars}
-                size={24}
-                style={{ color: "#B70D29" }}
-              />
+              <FontAwesomeIcon icon={faBars} size={24} style={g.primary} />
             </Pressable>
           ),
         }}
@@ -45,15 +36,7 @@ const CocktailNavigator = ({ navigation }) => {
         name="CocktailInfo"
         component={CocktailInfo}
         options={({ navigation }) => ({
-          headerLeft: () => (
-            <Pressable onPress={() => navigation.pop()}>
-              <FontAwesomeIcon
-                icon={faArrowLeft}
-                size={24}
-                style={{ color: "#B70D29" }}
-              />
-            </Pressable>
-          ),
+          headerLeft: () => <BackArrow navigation={navigation} />,
         })}
       />
     </Stack.Navigator>

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, TextInput, Alert } from "react-native";
+import { Text, View, TextInput, Alert } from "react-native";
 import { createUserAccount } from "../helpers/homebartenderServer";
 import { Button } from "@rneui/themed/dist/Button";
+import g from "../styles/styles";
 
 const CreateUser = ({ navigation }) => {
   const [newUserInfo, setNewUserInfo] = useState({
@@ -25,56 +26,45 @@ const CreateUser = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Username :</Text>
+    <View style={[g.pv6, g.ph3, g.bg.dark, { flex: 1 }]}>
+      <Text style={[g.ml6, g.h4, g.white]}>Username :</Text>
       <TextInput
         value={newUserInfo.username}
         placeholder="Username"
-        style={styles.textInput}
+        style={[
+          g.mh6,
+          g.mv4,
+          g.p2,
+          g.br2,
+          g.h4,
+          g.bg.white,
+          { borderWidth: 1, height: 40 },
+        ]}
         onChangeText={(username) =>
           setNewUserInfo({ ...newUserInfo, username })
         }
       />
-      <Text style={styles.text}>Password:</Text>
+      <Text style={[g.ml6, g.h4, g.white]}>Password:</Text>
       <TextInput
         value={newUserInfo.password}
         placeholder="Password"
-        style={styles.textInput}
+        style={[
+          g.mh6,
+          g.mv4,
+          g.p2,
+          g.br2,
+          g.h4,
+          g.bg.white,
+          { borderWidth: 1, height: 40 },
+        ]}
         onChangeText={(password) =>
           setNewUserInfo({ ...newUserInfo, password })
         }
         secureTextEntry
       />
-      <Button style={styles.button} onPress={onCreateUserAccount}>
-        Submit
-      </Button>
+      <Button onPress={onCreateUserAccount}>Submit</Button>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 40,
-    paddingHorizontal: 20,
-    backgroundColor: "#262626",
-    flex: 1,
-  },
-  text: {
-    marginLeft: 40,
-    fontSize: 20,
-    color: "#fff",
-  },
-  textInput: {
-    height: 40,
-    marginHorizontal: 40,
-    marginTop: 20,
-    marginBottom: 30,
-    padding: 8,
-    borderWidth: 1,
-    borderRadius: 5,
-    fontSize: 20,
-    backgroundColor: "#fff",
-  },
-});
 
 export default CreateUser;

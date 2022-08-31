@@ -4,9 +4,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MyCocktails from "../components/MyCocktails";
 import MyCocktailInfo from "../components/MyCocktailInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faBars, faArrowLeft, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faPlus } from "@fortawesome/free-solid-svg-icons";
 import CocktailCreator from "../components/CocktailCreator";
 import MyCocktailEditor from "../components/MyCocktailEditor";
+import BackArrow from "./components/BackArrow";
+import g from "../styles/styles";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,14 +17,8 @@ const MyCocktailsNavigator = ({ navigation }) => {
     <Stack.Navigator
       initialRouteName="My Cocktails"
       screenOptions={{
-        headerStyle: {
-          backgroundColor: "#262626",
-        },
-        headerTitleStyle: {
-          color: "#B70D29",
-          fontSize: 28,
-          justifyContent: "center",
-        },
+        headerStyle: g.bg.dark,
+        headerTitleStyle: [g.primary, g.h2, { justifyContent: "center" }],
         headerTitleAlign: "center",
         animation: "none",
       }}
@@ -33,20 +29,12 @@ const MyCocktailsNavigator = ({ navigation }) => {
         options={{
           headerLeft: () => (
             <Pressable onPress={() => navigation.toggleDrawer()}>
-              <FontAwesomeIcon
-                icon={faBars}
-                size={24}
-                style={{ color: "#B70D29" }}
-              />
+              <FontAwesomeIcon icon={faBars} size={24} style={g.primary} />
             </Pressable>
           ),
           headerRight: () => (
             <Pressable onPress={() => navigation.navigate("CocktailCreator")}>
-              <FontAwesomeIcon
-                icon={faPlus}
-                size={24}
-                style={{ color: "#B70D29" }}
-              />
+              <FontAwesomeIcon icon={faPlus} size={24} style={g.primary} />
             </Pressable>
           ),
         }}
@@ -56,15 +44,7 @@ const MyCocktailsNavigator = ({ navigation }) => {
         component={MyCocktailInfo}
         options={({ navigation }) => ({
           title: "My Cocktails",
-          headerLeft: () => (
-            <Pressable onPress={() => navigation.pop()}>
-              <FontAwesomeIcon
-                icon={faArrowLeft}
-                size={24}
-                style={{ color: "#B70D29" }}
-              />
-            </Pressable>
-          ),
+          headerLeft: () => <BackArrow navigation={navigation} />,
         })}
       />
       <Stack.Screen
@@ -72,15 +52,7 @@ const MyCocktailsNavigator = ({ navigation }) => {
         component={CocktailCreator}
         options={({ navigation }) => ({
           title: "Cocktail Creator",
-          headerLeft: () => (
-            <Pressable onPress={() => navigation.pop()}>
-              <FontAwesomeIcon
-                icon={faArrowLeft}
-                size={24}
-                style={{ color: "#B70D29" }}
-              />
-            </Pressable>
-          ),
+          headerLeft: () => <BackArrow navigation={navigation} />,
         })}
       />
       <Stack.Screen
@@ -88,15 +60,7 @@ const MyCocktailsNavigator = ({ navigation }) => {
         component={MyCocktailEditor}
         options={({ navigation }) => ({
           title: "Cocktail Editor",
-          headerLeft: () => (
-            <Pressable onPress={() => navigation.pop()}>
-              <FontAwesomeIcon
-                icon={faArrowLeft}
-                size={24}
-                style={{ color: "#B70D29" }}
-              />
-            </Pressable>
-          ),
+          headerLeft: () => <BackArrow navigation={navigation} />,
         })}
       />
     </Stack.Navigator>

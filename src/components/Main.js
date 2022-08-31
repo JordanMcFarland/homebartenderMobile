@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { AuthContext } from "../providers/AuthProvider";
 import MainNavigator from "../navigators/MainNavigator";
 import * as SecureStore from "expo-secure-store";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AirtableContext } from "../providers/AirtableProvider";
+import g from "../styles/styles";
 
 const Main = () => {
   const { cocktailsLoading, ingredientsLoading } = useContext(AirtableContext);
@@ -31,19 +32,17 @@ const Main = () => {
   if (loading || cocktailsLoading || ingredientsLoading) {
     return (
       <View
-        style={{
-          flex: 1,
-          backgroundColor: "#262626",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+        style={[
+          g.bg.dark,
+          { flex: 1, alignItems: "center", justifyContent: "center" },
+        ]}
       >
         <ActivityIndicator size="large" />
       </View>
     );
   } else {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#262626" }}>
+      <SafeAreaView style={[g.bg.dark, { flex: 1 }]}>
         <MainNavigator />
       </SafeAreaView>
     );

@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../providers/AuthProvider";
 import FavoritesNavigator from "./FavoritesNavigator";
+import g from "../styles/styles";
 
 const Drawer = createDrawerNavigator();
 
@@ -27,9 +28,7 @@ const CustomDrawerContent = (props) => {
       {user ? (
         <DrawerItem
           label={() => (
-            <Text style={{ color: "#B70D29", fontSize: 20, fontWeight: "500" }}>
-              Logout
-            </Text>
+            <Text style={[g.primary, g.h4, { fontWeight: "500" }]}>Logout</Text>
           )}
           onPress={() => logout()}
         />
@@ -47,34 +46,18 @@ const MainNavigator = () => {
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       initialRouteName={user ? "Home" : "Login"}
       screenOptions={({ navigation }) => ({
-        headerStyle: {
-          backgroundColor: "#262626",
-        },
-        headerTitleStyle: {
-          color: "#B70D29",
-          fontSize: 28,
-          justifyContent: "center",
-        },
+        headerStyle: g.bg.dark,
+        headerTitleStyle: [g.primary, g.h2, { justifyContent: "center" }],
         headerTitleAlign: "center",
-        drawerStyle: {
-          backgroundColor: "#262626",
-        },
-        drawerActiveTintColor: "#262626",
-        drawerActiveBackgroundColor: "#B70D29",
-        drawerInactiveTintColor: "#B70D29",
-        drawerLabelStyle: {
-          fontSize: 20,
-        },
-        headerLeftContainerStyle: {
-          paddingLeft: 15,
-        },
+        drawerStyle: g.bg.dark,
+        drawerActiveTintColor: g.dark.color,
+        drawerActiveBackgroundColor: g.primary.color,
+        drawerInactiveTintColor: g.primary.color,
+        drawerLabelStyle: g.h4,
+        headerLeftContainerStyle: g.pl3,
         headerLeft: () => (
           <Pressable onPress={() => navigation.toggleDrawer()}>
-            <FontAwesomeIcon
-              icon={faBars}
-              size={24}
-              style={{ color: "#B70D29" }}
-            />
+            <FontAwesomeIcon icon={faBars} size={24} style={g.primary} />
           </Pressable>
         ),
       })}

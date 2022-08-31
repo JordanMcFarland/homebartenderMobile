@@ -7,6 +7,7 @@ import {
   faRightToBracket,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
+import g from "../styles/styles";
 
 const Tab = createBottomTabNavigator();
 
@@ -18,14 +19,11 @@ const LoginNavigator = () => {
         tabBarStyle: {
           height: 60,
         },
-        tabBarActiveBackgroundColor: "#B70D29",
-        tabBarInactiveBackgroundColor: "#262626",
-        tabBarActiveTintColor: "white",
-        tabBarInactiveTintColor: "white",
-        tabBarLabelStyle: {
-          fontSize: 16,
-          paddingBottom: 5,
-        },
+        tabBarActiveBackgroundColor: g.primary.color,
+        tabBarInactiveBackgroundColor: g.dark.color,
+        tabBarActiveTintColor: g.white.color,
+        tabBarInactiveTintColor: g.white.color,
+        tabBarLabelStyle: [g.h5, g.pb1],
       }}
     >
       <Tab.Screen

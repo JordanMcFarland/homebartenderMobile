@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { ScrollView, View, Text, StyleSheet } from "react-native";
+import { ScrollView, View, Text } from "react-native";
 import { Button } from "@rneui/base";
 import g from "../styles/styles";
 import { AuthContext } from "../providers/AuthProvider";
@@ -16,11 +16,11 @@ const MyBar = ({ navigation }) => {
   const renderMyBar = userBarCategories.map((category, index) => {
     if (user.userBar[category].length) {
       return (
-        <View style={{ marginVertical: g.margins.m2 }} key={index}>
-          <Text style={styles.subHeader}>{category}</Text>
+        <View style={g.m2} key={index}>
+          <Text style={[g.h3, { fontWeight: "bold" }]}>{category}</Text>
           {user.userBar[category].map((ingredient) => {
             return (
-              <Text style={styles.text} key={ingredient._id}>
+              <Text style={g.h5} key={ingredient._id}>
                 - {ingredient.name}
               </Text>
             );
@@ -31,46 +31,19 @@ const MyBar = ({ navigation }) => {
   });
 
   return (
-    <View style={styles.container}>
+    <View style={[g.bg.dark, { flex: 1 }]}>
       <Button
         title="What can I make?"
         onPress={() => navigation.navigate("Craftable Cocktails")}
-        containerStyle={styles.button}
+        containerStyle={[g.br2, { alignSelf: "center" }]}
       />
       {user.userBar && (
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.mainScrollView}
-        >
+        <ScrollView style={[g.bg.primary, g.m2, g.br2, g.ph4]}>
           {renderMyBar}
         </ScrollView>
       )}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: g.colors.background,
-    flex: 1,
-  },
-  scrollView: {
-    backgroundColor: g.colors.primary,
-    margin: g.margins.m2,
-    borderRadius: g.borderRadius.r2,
-    paddingHorizontal: g.padding.p4,
-  },
-  button: {
-    borderRadius: g.borderRadius.r2,
-    alignSelf: "center",
-  },
-  subHeader: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  text: {
-    fontSize: 18,
-  },
-});
 
 export default MyBar;

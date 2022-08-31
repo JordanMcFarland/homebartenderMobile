@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  StyleSheet,
   ScrollView,
   Keyboard,
   Pressable,
@@ -13,7 +12,7 @@ import { Button } from "@rneui/themed/dist/Button";
 import { AirtableContext } from "../providers/AirtableProvider";
 import { Card } from "@rneui/base";
 import { AuthContext } from "../providers/AuthProvider";
-import g from "../styles/styles";
+import g, { colors } from "../styles/styles";
 import SelectDropdown from "react-native-select-dropdown";
 import RadioButtonsGroup from "react-native-radio-buttons-group";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -104,26 +103,30 @@ const IngredientContainer = ({
   // RENDER
   return (
     <View
-      style={{
-        borderWidth: 1,
-        borderColor: g.colors.background,
-        backgroundColor: g.colors.secondary,
-        paddingVertical: 8,
-        paddingHorizontal: 8,
-        borderRadius: 8,
-        marginTop: 16,
-      }}
+      style={[
+        g.bdc.dark,
+        g.bg.secondary,
+        g.p2,
+        g.br2,
+        g.mt3,
+        { borderWidth: 1 },
+      ]}
     >
       <Text>Ingredient Name:</Text>
       <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
         {ingredientInfo.custom ? (
           <TextInput
-            style={{
-              ...styles.textInput,
-              marginTop: 8,
-              width: width / 2,
-              marginHorizontal: 8,
-            }}
+            style={[
+              g.bg.white,
+              g.mt3,
+              g.br2,
+              g.ph2,
+              g.h4,
+              g.bdc.dark,
+              g.mt2,
+              g.mh2,
+              { height: 40, borderWidth: 1, width: width / 2 },
+            ]}
             value={ingredientInfo.name}
             onChangeText={(name) => updateIngredientInfo("name", name)}
           />
@@ -135,33 +138,25 @@ const IngredientContainer = ({
             onSelect={(name) => updateIngredientInfo("name", name)}
             searchPlaceHolder="Search ingredients..."
             buttonStyle={{
-              marginTop: 8,
-              marginHorizontal: 8,
-              borderRadius: 8,
-              backgroundColor: g.colors.primary,
+              marginTop: g.mt2.marginTop,
+              marginHorizontal: g.mh2.marginHorizontal,
+              borderRadius: g.br2.borderRadius,
+              backgroundColor: g.bg.primary.backgroundColor,
               height: 40,
               width: width / 2,
             }}
-            buttonTextStyle={{
-              color: "#fff",
-            }}
-            dropdownStyle={{
-              borderRadius: 8,
-              backgroundColor: g.colors.background,
-            }}
-            rowTextStyle={{ color: "#fff" }}
+            buttonTextStyle={g.white}
+            dropdownStyle={g.br2}
           />
         )}
         <CheckBox
-          containerStyle={{
-            backgroundColor: g.colors.secondary,
-            paddingHorizontal: 0,
-            marginBottom: 0,
-            paddingBottom: 0,
-          }}
+          containerStyle={[
+            g.bg.secondary,
+            { paddingHorizontal: 0, marginBottom: 0, paddingBottom: 0 },
+          ]}
           size={28}
-          uncheckedColor={g.colors.background}
-          checkedColor={g.colors.primary}
+          uncheckedColor={g.dark.color}
+          checkedColor={g.primary.color}
           onPress={() =>
             setIngredientInfo({
               ...ingredientInfo,
@@ -170,13 +165,10 @@ const IngredientContainer = ({
           }
           checked={ingredientInfo.custom}
           title="Custom"
-          textStyle={{
-            fontSize: 20,
-            fontWeight: "normal",
-          }}
+          textStyle={[g.h4, { fontWeight: "normal" }]}
         />
       </View>
-      <Text style={{ marginTop: 8 }}>Amount:</Text>
+      <Text style={g.mt2}>Amount:</Text>
       <View
         style={{
           flexDirection: "row",
@@ -185,33 +177,38 @@ const IngredientContainer = ({
       >
         <TextInput
           keyboardType="number-pad"
-          style={{
-            ...styles.textInput,
-            width: width / 4,
-            marginHorizontal: 8,
-            marginTop: 8,
-          }}
+          style={[
+            g.bg.white,
+            g.mt2,
+            g.br2,
+            g.ph2,
+            g.h4,
+            g.bdc.dark,
+            g.mh2,
+            { height: 40, borderWidth: 1, width: width / 4 },
+          ]}
           onChangeText={(amount) => updateIngredientInfo("amount", amount)}
         />
         <SelectDropdown
           data={units}
           buttonStyle={{
-            borderRadius: 8,
-            backgroundColor: g.colors.primary,
+            borderRadius: g.br2.borderRadius,
+            backgroundColor: g.bg.primary.backgroundColor,
+            marginHorizontal: g.mh2.marginHorizontal,
+            marginTop: g.mt2.marginTop,
             width: width / 4,
-            marginHorizontal: 8,
-            marginTop: 8,
             height: 40,
           }}
+          dropdownStyle={g.br2}
           defaultButtonText="Select"
-          buttonTextStyle={{ color: "#fff" }}
+          buttonTextStyle={g.white}
           buttonTextAfterSelection={(selectedItem) => selectedItem}
           onSelect={(selectedItem) =>
             updateIngredientInfo("unit", selectedItem)
           }
         />
       </View>
-      <Text style={{ marginTop: 8 }}>Type:</Text>
+      <Text style={g.mt2}>Type:</Text>
       <RadioButtonsGroup
         radioButtons={radioButtons}
         onPress={(radioButtonsArray) => {
@@ -227,11 +224,7 @@ const IngredientContainer = ({
         }}
         onPress={() => confirmDeleteIngredient()}
       >
-        <FontAwesomeIcon
-          icon={faTrashCan}
-          style={{ color: g.colors.primary }}
-          size={24}
-        />
+        <FontAwesomeIcon icon={faTrashCan} style={g.primary} size={24} />
       </Pressable>
     </View>
   );
@@ -247,7 +240,6 @@ const CocktailCreator = ({ navigation }) => {
   const [tempIngredients, setTempIngredients] = useState([{ _id: 0 }]);
   const [nextIngredientId, setNextIngredientId] = useState(1);
   const [errors, setErrors] = useState({});
-  const [modalVisible, setModalVisible] = useState(false);
   const [recipeInputHeight, setRecipeInputHeight] = useState(40);
 
   const { handlePostUserCocktail } = useContext(AuthContext);
@@ -329,44 +321,58 @@ const CocktailCreator = ({ navigation }) => {
   ));
 
   return (
-    <View style={styles.container}>
-      <Card containerStyle={styles.card}>
+    <View style={[{ flex: 1 }, g.bg.dark]}>
+      <Card containerStyle={[g.bg.secondary, g.br3, g.mb3, { padding: 0 }]}>
         <ScrollView>
-          <View style={styles.cardView}>
+          <View style={g.p4}>
             <Text style={{ fontSize: 24 }}>Name: </Text>
             <TextInput
               style={
                 errors.name
-                  ? { ...styles.textInput, borderColor: "red", borderWidth: 2 }
-                  : styles.textInput
+                  ? [
+                      g.bg.white,
+                      g.mt3,
+                      g.br2,
+                      g.ph2,
+                      g.h4,
+                      g.bdc.dark,
+                      g.bdc.error,
+                      { height: 40, borderWidth: 2 },
+                    ]
+                  : [
+                      g.bg.white,
+                      g.mt3,
+                      g.br2,
+                      g.ph2,
+                      g.h4,
+                      g.bdc.dark,
+                      { height: 40, borderWidth: 1 },
+                    ]
               }
               value={newCocktail.name}
               onChangeText={(name) => updateNewCocktail(name, "name")}
               onFocus={() => setErrors({ name: undefined })}
             />
-            {errors.name && (
-              <Text style={{ color: "red", marginTop: 4 }}>{errors.name}</Text>
-            )}
-            <Text style={{ fontSize: 24, marginTop: 16 }}>Ingredients: </Text>
+            {errors.name && <Text style={[g.error, g.mt1]}>{errors.name}</Text>}
+            <Text style={[g.h3, g.mt3]}>Ingredients: </Text>
             {renderIngredientContainers}
             <Pressable
-              style={{
-                marginTop: 16,
-                backgroundColor: g.colors.background,
-                alignSelf: "flex-start",
-                borderRadius: 16,
-              }}
+              style={[g.mt3, g.bg.dark, g.br3, { alignSelf: "flex-start" }]}
               onPress={() => addIngredient()}
             >
-              <FontAwesomeIcon
-                icon={faPlus}
-                style={{ color: g.colors.primary }}
-                size={24}
-              />
+              <FontAwesomeIcon icon={faPlus} style={g.primary} size={24} />
             </Pressable>
-            <Text style={{ fontSize: 24, marginTop: 16 }}>Recipe: </Text>
+            <Text style={[g.h3, g.mt3]}>Recipe: </Text>
             <TextInput
-              style={{ ...styles.textInput, height: recipeInputHeight }}
+              style={[
+                g.bg.white,
+                g.mt3,
+                g.br2,
+                g.ph2,
+                g.h4,
+                g.bdc.dark,
+                { height: 40, borderWidth: 1, height: recipeInputHeight },
+              ]}
               value={newCocktail.recipe}
               multiline={true}
               onChangeText={(recipe) => updateNewCocktail(recipe, "recipe")}
@@ -375,10 +381,7 @@ const CocktailCreator = ({ navigation }) => {
               }}
             />
             <Button
-              containerStyle={{
-                ...styles.button,
-                alignSelf: "center",
-              }}
+              containerStyle={[g.mt3, g.br2, { alignSelf: "center" }]}
               title="Submit"
               onPress={() => {
                 onPostUserCocktail(newCocktail);
@@ -390,42 +393,5 @@ const CocktailCreator = ({ navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: g.colors.background,
-  },
-  card: {
-    backgroundColor: g.colors.secondary,
-    borderRadius: 16,
-    padding: 0,
-    marginBottom: 16,
-  },
-  cardView: {
-    paddingHorizontal: 40,
-    paddingVertical: 24,
-  },
-  textInput: {
-    backgroundColor: "#fff",
-    marginTop: 16,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    height: 40,
-    fontSize: 20,
-    borderColor: g.colors.background,
-    borderWidth: 1,
-  },
-  ingredientScrollView: {
-    backgroundColor: "#FFCCCB",
-    borderRadius: 8,
-    padding: 8,
-  },
-  button: {
-    marginTop: 16,
-    borderRadius: 8,
-    alignSelf: "flex-start",
-  },
-});
 
 export default CocktailCreator;

@@ -1,16 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  ToastAndroid,
-  Dimensions,
-  ScrollView,
-} from "react-native";
+import { Text, View, ToastAndroid, Dimensions, ScrollView } from "react-native";
 import { Button } from "@rneui/base/dist/Button";
 import { AuthContext } from "../providers/AuthProvider";
 import g from "../styles/styles";
-import * as SecureStore from "expo-secure-store";
 import DraggableView from "../shared/DraggableView";
 import { AirtableContext } from "../providers/AirtableProvider";
 import { Card } from "@rneui/base";
@@ -53,49 +45,86 @@ const Home = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.greetingText}>
+    <View style={[g.bg.dark, { flex: 1 }]}>
+      <Text style={[g.primary, g.h1, g.pr3, g.pt3, { marginLeft: "auto" }]}>
         {user && `Hello, ${user.username}!`}
       </Text>
       <ScrollView
-        contentContainerStyle={styles.recommendationContainer}
-        style={{ marginTop: 8 }}
+        contentContainerStyle={[
+          g.pb3,
+          {
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-evenly",
+          },
+        ]}
+        style={g.mt2}
       >
-        <View style={styles.insideRecommendationContainer}>
-          <Text style={styles.text}>Why not try this cocktail today?</Text>
-          <Card containerStyle={styles.card}>
-            <Card.Title style={styles.cardTitle}>
+        <View
+          style={[
+            g.mt3,
+            g.mh3,
+            { flexDirection: "column", alignItems: "center" },
+          ]}
+        >
+          <Text style={[g.primary, g.h3, g.mh2]}>
+            Why not try this cocktail today?
+          </Text>
+          <Card
+            containerStyle={[
+              g.bg.primary,
+              g.br2,
+              g.mh3,
+              g.bdc.secondary,
+              { width: 276 },
+            ]}
+          >
+            <Card.Title style={[g.white, g.h3]}>
               {randomStockCocktail.name}
             </Card.Title>
             <Card.Divider />
-            <Text style={styles.cardSubheaderText}>Ingredients:</Text>
-            <View style={{ marginTop: 8 }}>
+            <Text style={[g.h4, g.mt2]}>Ingredients:</Text>
+            <View style={g.mt2}>
               {randomStockCocktail.requiredIngredients?.map(
                 (ingredient, index) => {
                   return (
-                    <Text style={styles.cardText} key={index}>
+                    <Text style={g.h5} key={index}>
                       - {ingredient}
                     </Text>
                   );
                 }
               )}
             </View>
-            <Text style={styles.cardSubheaderText}>Recipe:</Text>
-            <Text style={{ ...styles.cardText, marginTop: 8 }}>
-              {randomStockCocktail.recipe}
-            </Text>
+            <Text style={[g.h4, g.mt2]}>Recipe:</Text>
+            <Text style={[g.h5, g.mt2]}>{randomStockCocktail.recipe}</Text>
           </Card>
         </View>
         {userMostRecentCocktail && user ? (
-          <View style={styles.insideRecommendationContainer}>
-            <Text style={styles.text}>Your most recent creation.</Text>
-            <Card containerStyle={styles.card}>
-              <Card.Title style={styles.cardTitle}>
+          <View
+            style={[
+              g.mt3,
+              g.mh3,
+              { flexDirection: "column", alignItems: "center" },
+            ]}
+          >
+            <Text style={[g.primary, g.h3, g.mh2]}>
+              Your most recent creation.
+            </Text>
+            <Card
+              containerStyle={[
+                g.br2,
+                g.mh3,
+                g.bg.primary,
+                g.bdc.secondary,
+                { width: 276 },
+              ]}
+            >
+              <Card.Title style={[g.white, g.h3]}>
                 {userMostRecentCocktail.name}
               </Card.Title>
               <Card.Divider />
-              <Text style={styles.cardSubheaderText}>Ingredients:</Text>
-              <View style={{ marginTop: 8 }}>
+              <Text style={[g.h4, g.mt2]}>Ingredients:</Text>
+              <View style={g.mt2}>
                 {userMostRecentCocktail.requiredIngredients?.map(
                   (ingredient, index) => {
                     const ingredientString =
@@ -104,17 +133,15 @@ const Home = () => {
                         " "
                       );
                     return (
-                      <Text style={styles.cardText} key={index}>
+                      <Text style={g.h5} key={index}>
                         {ingredientString}
                       </Text>
                     );
                   }
                 )}
               </View>
-              <Text style={styles.cardSubheaderText}>Recipe:</Text>
-              <Text style={{ ...styles.cardText, marginTop: 8 }}>
-                {userMostRecentCocktail.recipe}
-              </Text>
+              <Text style={[g.h4, g.mt2]}>Recipe:</Text>
+              <Text style={[g.h5, g.mt2]}>{userMostRecentCocktail.recipe}</Text>
             </Card>
           </View>
         ) : (
@@ -124,54 +151,5 @@ const Home = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: g.colors.background,
-  },
-  greetingText: {
-    color: g.colors.primary,
-    fontSize: 32,
-    marginLeft: "auto",
-    paddingRight: 16,
-    paddingTop: 16,
-  },
-  recommendationContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-evenly",
-    paddingBottom: 16,
-  },
-  insideRecommendationContainer: {
-    flexDirection: "column",
-    marginTop: 16,
-    marginHorizontal: 16,
-    alignItems: "center",
-  },
-  text: {
-    color: g.colors.secondary,
-    fontSize: 24,
-    marginHorizontal: 8,
-  },
-  card: {
-    borderRadius: 8,
-    marginHorizontal: 16,
-    backgroundColor: g.colors.primary,
-    borderColor: g.colors.secondary,
-    width: 276,
-  },
-  cardTitle: {
-    color: "#fff",
-    fontSize: 24,
-  },
-  cardSubheaderText: {
-    fontSize: 20,
-    marginTop: 8,
-  },
-  cardText: {
-    fontSize: 16,
-  },
-});
 
 export default Home;

@@ -5,12 +5,11 @@ import {
   TextInput,
   ScrollView,
   Keyboard,
-  StyleSheet,
   Pressable,
   Modal,
   Alert,
 } from "react-native";
-import g from "../styles/styles";
+import g, { width } from "../styles/styles";
 import { Button, Card } from "@rneui/base";
 import { AuthContext } from "../providers/AuthProvider";
 import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
@@ -20,7 +19,6 @@ import SelectDropdown from "react-native-select-dropdown";
 import RadioButtonsGroup from "react-native-radio-buttons-group";
 import { AirtableContext } from "../providers/AirtableProvider";
 import { CheckBox } from "@rneui/base";
-import { width } from "../styles/styles";
 
 const IngredientContainer = ({
   deleteIngredient,
@@ -53,7 +51,7 @@ const IngredientContainer = ({
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
 
   const { uncategorizedIngredients } = useContext(AirtableContext);
-  const units = ["oz", "tsp", "tbs", "dash", "dashes"];
+  const units = ["   ", "oz", "tsp", "tbs", "dash", "dashes"];
 
   // FUNCTIONS
   useEffect(() => {
@@ -104,15 +102,14 @@ const IngredientContainer = ({
   // RENDER
   return (
     <View
-      style={{
-        borderWidth: 1,
-        borderColor: g.colors.background,
-        backgroundColor: g.colors.secondary,
-        paddingVertical: 8,
-        paddingHorizontal: 8,
-        borderRadius: 8,
-        marginTop: 16,
-      }}
+      style={[
+        g.bdc.dark,
+        g.bg.secondary,
+        g.p2,
+        g.br2,
+        g.mt3,
+        { borderWidth: 1 },
+      ]}
     >
       <Text>Ingredient Name:</Text>
       <View
@@ -123,50 +120,47 @@ const IngredientContainer = ({
       >
         {ingredientInfo.custom ? (
           <TextInput
-            style={{
-              ...styles.textInput,
-              marginTop: 8,
-              width: width / 2,
-              marginHorizontal: 8,
-            }}
+            style={[
+              g.bg.white,
+              g.mt2,
+              g.br2,
+              g.ph2,
+              g.h4,
+              g.bdc.dark,
+              g.mh2,
+              { borderWidth: 1, height: 40, width: width / 2 },
+            ]}
             value={ingredientInfo.name}
             onChangeText={(name) => updateIngredientInfo("name", name)}
           />
         ) : (
           <SelectDropdown
             data={uncategorizedIngredients}
+            defaultButtonText="Select Ingredient"
             search={true}
             defaultValue={ingredientInfo.name}
             onSelect={(name) => updateIngredientInfo("name", name)}
             searchPlaceHolder="Search ingredients..."
             buttonStyle={{
-              marginTop: 8,
-              marginHorizontal: 8,
-              borderRadius: 8,
-              backgroundColor: g.colors.primary,
+              marginTop: g.mt2.marginTop,
+              marginHorizontal: g.mh2.marginHorizontal,
+              borderRadius: g.br2.borderRadius,
+              backgroundColor: g.bg.primary.backgroundColor,
               height: 40,
               width: width / 2,
             }}
-            buttonTextStyle={{
-              color: "#fff",
-            }}
-            dropdownStyle={{
-              borderRadius: 8,
-              backgroundColor: g.colors.background,
-            }}
-            rowTextStyle={{ color: "#fff" }}
+            buttonTextStyle={g.white}
+            dropdownStyle={g.br2}
           />
         )}
         <CheckBox
-          containerStyle={{
-            backgroundColor: g.colors.secondary,
-            paddingHorizontal: 0,
-            marginBottom: 0,
-            paddingBottom: 0,
-          }}
+          containerStyle={[
+            g.bg.secondary,
+            { paddingHorizontal: 0, marginBottom: 0, paddingBottom: 0 },
+          ]}
           size={28}
-          uncheckedColor={g.colors.background}
-          checkedColor={g.colors.primary}
+          uncheckedColor={g.dark.color}
+          checkedColor={g.primary.color}
           onPress={() =>
             setIngredientInfo({
               ...ingredientInfo,
@@ -175,13 +169,10 @@ const IngredientContainer = ({
           }
           checked={ingredientInfo.custom}
           title="Custom"
-          textStyle={{
-            fontSize: 20,
-            fontWeight: "normal",
-          }}
+          textStyle={[g.h4, { fontWeight: "normal" }]}
         />
       </View>
-      <Text style={{ marginTop: 8 }}>Amount:</Text>
+      <Text style={g.mt2}>Amount:</Text>
       <View
         style={{
           flexDirection: "row",
@@ -190,35 +181,39 @@ const IngredientContainer = ({
       >
         <TextInput
           keyboardType="number-pad"
-          style={{
-            ...styles.textInput,
-            width: width / 4,
-            marginHorizontal: 8,
-            marginTop: 8,
-          }}
+          style={[
+            g.bg.white,
+            g.mt2,
+            g.mh2,
+            g.br2,
+            g.ph2,
+            g.h4,
+            g.bdc.dark,
+            { borderWidth: 1, height: 40, width: width / 4 },
+          ]}
           value={ingredientInfo.amount}
           onChangeText={(amount) => updateIngredientInfo("amount", amount)}
         />
         <SelectDropdown
           data={units}
           buttonStyle={{
-            borderRadius: 8,
-            backgroundColor: g.colors.primary,
-            width: width / 4,
-            marginHorizontal: 8,
-            marginTop: 8,
+            borderRadius: g.br2.borderRadius,
+            backgroundColor: g.bg.primary.backgroundColor,
+            marginHorizontal: g.mh2.marginHorizontal,
+            marginTop: g.mt2.marginTop,
             height: 40,
+            width: width / 4,
           }}
           defaultValue={ingredientInfo.unit}
           defaultButtonText="Select"
-          buttonTextStyle={{ color: "#fff" }}
+          buttonTextStyle={g.white}
           buttonTextAfterSelection={(selectedItem) => selectedItem}
           onSelect={(selectedItem) =>
             updateIngredientInfo("unit", selectedItem)
           }
         />
       </View>
-      <Text style={{ marginTop: 8 }}>Type:</Text>
+      <Text style={g.mt2}>Type:</Text>
       <RadioButtonsGroup
         radioButtons={radioButtons}
         onPress={(radioButtonsArray) => {
@@ -234,11 +229,7 @@ const IngredientContainer = ({
         }}
         onPress={() => confirmDeleteIngredient()}
       >
-        <FontAwesomeIcon
-          icon={faTrashCan}
-          style={{ color: g.colors.primary }}
-          size={24}
-        />
+        <FontAwesomeIcon icon={faTrashCan} style={g.primary} size={24} />
       </Pressable>
     </View>
   );
@@ -352,50 +343,63 @@ const MyCocktailEditor = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Card containerStyle={styles.card}>
+    <View style={[g.bg.dark, { flex: 1 }]}>
+      <Card containerStyle={[g.bg.secondary, g.br3, g.mb3, { padding: 0 }]}>
         <ScrollView>
-          <View style={styles.cardView}>
+          <View style={g.p4}>
             <Pressable
               onPress={() => setModalVisible(true)}
               style={{ position: "absolute", right: 40, top: 24, zIndex: 10 }}
             >
-              <FontAwesomeIcon
-                icon={faTrashCan}
-                size={28}
-                style={{
-                  color: "#262626",
-                }}
-              />
+              <FontAwesomeIcon icon={faTrashCan} size={28} style={g.dark} />
             </Pressable>
-            <Text style={{ fontSize: 24 }}>Name:</Text>
+            <Text style={g.h3}>Name:</Text>
             <TextInput
-              style={!errors.name ? styles.textInput : styles.textInputError}
+              style={
+                !errors.name
+                  ? [
+                      g.bg.white,
+                      g.mt3,
+                      g.br2,
+                      g.ph2,
+                      g.h4,
+                      g.bdc.dark,
+                      { borderWidth: 1, height: 40 },
+                    ]
+                  : [
+                      g.bg.white,
+                      g.mt3,
+                      g.br2,
+                      g.ph2,
+                      g.h4,
+                      g.bdc.error,
+                      { borderWidth: 2, height: 40 },
+                    ]
+              }
               value={editingCocktailInfo.name}
               onChangeText={(name) => updateEditingCocktailInfo(name, "name")}
               onFocus={() => setErrors({ name: undefined })}
             />
-            {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
-            <Text style={{ fontSize: 20, marginTop: 16 }}>Ingredients:</Text>
+            {errors.name && <Text style={[g.error, mt1]}>{errors.name}</Text>}
+            <Text style={[g.h4, g.mt3]}>Ingredients:</Text>
             {renderIngredientContainers}
             <Pressable
-              style={{
-                marginTop: 16,
-                backgroundColor: g.colors.background,
-                alignSelf: "flex-start",
-                borderRadius: 16,
-              }}
+              style={[g.mt3, g.bg.dark, g.br3, { alignSelf: "flex-start" }]}
               onPress={() => addIngredient()}
             >
-              <FontAwesomeIcon
-                icon={faPlus}
-                style={{ color: g.colors.primary }}
-                size={24}
-              />
+              <FontAwesomeIcon icon={faPlus} style={g.primary} size={24} />
             </Pressable>
-            <Text style={{ fontSize: 20, marginTop: 16 }}>Recipe:</Text>
+            <Text style={[g.h4, g.mt3]}>Recipe:</Text>
             <TextInput
-              style={{ ...styles.textInput, height: recipeInputHeight }}
+              style={[
+                g.bg.white,
+                g.mt3,
+                g.br2,
+                g.ph2,
+                g.h4,
+                g.bdc.dark,
+                { borderWidth: 1, height: recipeInputHeight },
+              ]}
               multiline={true}
               value={editingCocktailInfo.recipe}
               onChangeText={(recipe) =>
@@ -406,7 +410,7 @@ const MyCocktailEditor = ({ route, navigation }) => {
               }}
             />
             <Button
-              containerStyle={{ marginTop: 16, borderRadius: 8 }}
+              containerStyle={[g.mt3, g.br2]}
               title="Save Changes"
               onPress={() => onUpdateUserCocktail()}
             />
@@ -416,20 +420,25 @@ const MyCocktailEditor = ({ route, navigation }) => {
               transparent={true}
               animationType={"fade"}
             >
-              <View style={styles.modalView}>
+              <View style={[g.m5, g.p6, g.bg.primary, g.br3]}>
                 <Text
-                  style={styles.modalText}
+                  style={[g.white, g.h5]}
                 >{`Are you sure you want to delete ${cocktail.name}?`}</Text>
-                <View style={styles.modalButtonContainer}>
+                <View
+                  style={[
+                    g.mt5,
+                    { justifyContent: "flex-start", flexDirection: "row" },
+                  ]}
+                >
                   <Button
                     title="Cancel"
                     onPress={() => setModalVisible(false)}
-                    containerStyle={styles.modalButton}
+                    containerStyle={[g.mr5, g.br2]}
                   />
                   <Button
                     title="Delete"
                     onPress={() => onDeleteUserCocktail()}
-                    containerStyle={styles.modalButton}
+                    containerStyle={[g.mr5, g.br2]}
                   />
                 </View>
               </View>
@@ -440,66 +449,5 @@ const MyCocktailEditor = ({ route, navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: g.colors.background,
-  },
-  card: {
-    backgroundColor: g.colors.secondary,
-    borderRadius: 16,
-    padding: 0,
-    marginBottom: 16,
-  },
-  cardView: {
-    paddingHorizontal: 40,
-    paddingVertical: 24,
-  },
-  textInput: {
-    backgroundColor: "#fff",
-    marginTop: 16,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    height: 40,
-    fontSize: 20,
-    borderColor: g.colors.background,
-    borderWidth: 1,
-  },
-  textInputError: {
-    backgroundColor: "#fff",
-    marginTop: 16,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    height: 40,
-    fontSize: 20,
-    borderColor: "red",
-    borderWidth: 2,
-  },
-  errorText: {
-    color: "red",
-    marginTop: 4,
-  },
-  modalView: {
-    margin: 32,
-    padding: 48,
-    backgroundColor: g.colors.primary,
-    borderRadius: 16,
-  },
-  modalText: {
-    //textAlign: "center",
-    color: "#fff",
-    fontSize: 16,
-  },
-  modalButtonContainer: {
-    justifyContent: "flex-start",
-    flexDirection: "row",
-    marginTop: 32,
-  },
-  modalButton: {
-    marginRight: 32,
-    borderRadius: 8,
-  },
-});
 
 export default MyCocktailEditor;

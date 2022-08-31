@@ -1,18 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Vibration,
-} from "react-native";
+import { Pressable, Text, View, Image, Vibration } from "react-native";
 import { Card } from "@rneui/themed";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as faSolidHeart } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../providers/AuthProvider";
 import { AirtableContext } from "../providers/AirtableProvider";
+import g from "../styles/styles";
 
 const CocktailInfo = ({ route }) => {
   // Temp state solution
@@ -59,9 +53,9 @@ const CocktailInfo = ({ route }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Card containerStyle={styles.card}>
-        <Card.FeaturedTitle style={styles.title}>
+    <View style={[g.bg.dark, { flex: 1 }]}>
+      <Card containerStyle={[g.bg.primary, g.bdc.secondary, g.br3]}>
+        <Card.FeaturedTitle style={[g.mb2, { alignSelf: "center" }]}>
           {cocktail.name}
         </Card.FeaturedTitle>
         <Pressable
@@ -93,56 +87,23 @@ const CocktailInfo = ({ route }) => {
             }}
           />
         )}
-        <Text
-          style={{
-            ...styles.text,
-            marginTop: 15,
-            marginBottom: 10,
-            fontWeight: "bold",
-          }}
-        >
+        <Text style={[g.h5, g.mt3, g.mb2, { fontWeight: "bold" }]}>
           Ingredients:
         </Text>
         {cocktail.requiredIngredients?.map((ingredient, index) => {
           return (
-            <Text style={styles.text} key={index}>
+            <Text style={g.h5} key={index}>
               {ingredient}
             </Text>
           );
         })}
-        <Text
-          style={{
-            ...styles.text,
-            marginTop: 15,
-            marginBottom: 10,
-            fontWeight: "bold",
-          }}
-        >
+        <Text style={[g.h5, g.mt3, g.mb2, { fontWeight: "bold" }]}>
           Recipe:
         </Text>
-        <Text style={styles.text}>{cocktail.recipe}</Text>
+        <Text style={g.h5}>{cocktail.recipe}</Text>
       </Card>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#262626",
-  },
-  card: {
-    backgroundColor: "#B70D29",
-    borderColor: "#505050",
-    borderRadius: 15,
-  },
-  title: {
-    alignSelf: "center",
-    marginBottom: 10,
-  },
-  text: {
-    fontSize: 16,
-  },
-});
 
 export default CocktailInfo;

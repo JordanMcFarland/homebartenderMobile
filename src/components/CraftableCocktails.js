@@ -1,7 +1,7 @@
 import { Link } from "@react-navigation/native";
 import { Card } from "@rneui/base";
 import React, { useContext, useEffect, useState } from "react";
-import { View, ScrollView, Text, StyleSheet } from "react-native";
+import { View, ScrollView, Text } from "react-native";
 import { AirtableContext } from "../providers/AirtableProvider";
 import { AuthContext } from "../providers/AuthProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -70,7 +70,10 @@ const CraftableCocktails = () => {
 
   const renderCraftableCocktails = craftableCocktails.map((cocktail) => {
     return (
-      <Card key={cocktail._id} containerStyle={styles.card}>
+      <Card
+        key={cocktail._id}
+        containerStyle={[g.bg.primary, g.bdc.secondary, g.br3]}
+      >
         {cocktail.userId && (
           <FontAwesomeIcon
             icon={faUser}
@@ -83,36 +86,17 @@ const CraftableCocktails = () => {
             params: cocktail._id,
           }}
         >
-          <Text style={styles.text}>{cocktail.name}</Text>
+          <Text style={[g.h5, { fontWeight: "bold" }]}>{cocktail.name}</Text>
         </Link>
       </Card>
     );
   });
 
   return (
-    <View style={styles.container}>
+    <View style={[g.bg.dark, { flex: 1 }]}>
       <ScrollView>{renderCraftableCocktails}</ScrollView>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: g.colors.background,
-  },
-  contentContainerStyle: {
-    paddingBottom: 16,
-  },
-  card: {
-    backgroundColor: "#B70D29",
-    borderColor: "#505050",
-    borderRadius: 16,
-  },
-  text: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
 
 export default CraftableCocktails;
