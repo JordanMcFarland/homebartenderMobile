@@ -5,7 +5,7 @@ import {
   DrawerItem,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import Home from "../components/Home";
+import Home from "../screens/Home";
 import { Pressable, Text } from "react-native";
 import CocktailNavigator from "./CocktailNavigator";
 import MyCocktailsNavigator from "./MyCocktailsNavigator";

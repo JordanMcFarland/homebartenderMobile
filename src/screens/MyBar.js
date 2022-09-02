@@ -3,6 +3,7 @@ import { ScrollView, View, Text } from "react-native";
 import { Button } from "@rneui/base";
 import g from "../styles/styles";
 import { AuthContext } from "../providers/AuthProvider";
+import SlidingView from "./components/SlidingView";
 
 const MyBar = ({ navigation }) => {
   const { user } = useContext(AuthContext);
@@ -20,9 +21,32 @@ const MyBar = ({ navigation }) => {
           <Text style={[g.h3, { fontWeight: "bold" }]}>{category}</Text>
           {user.userBar[category].map((ingredient) => {
             return (
-              <Text style={g.h5} key={ingredient._id}>
-                - {ingredient.name}
-              </Text>
+              <SlidingView
+                key={ingredient._id}
+                containerStyle={[g.mv1, g.br1]}
+                sliderStyle={[
+                  g.bg.secondary,
+                  g.br1,
+                  g.pv3,
+                  {
+                    borderWidth: 1,
+                  },
+                ]}
+                buttonText="Remove"
+                buttonStyle={[
+                  g.bg.dark,
+                  g.br1,
+                  {
+                    width: 200,
+                  },
+                ]}
+                buttonTextStyle={g.white}
+                sliderActivateDistance={-200}
+              >
+                <Text style={[g.h4, { alignSelf: "center" }]}>
+                  {ingredient.name}
+                </Text>
+              </SlidingView>
             );
           })}
         </View>

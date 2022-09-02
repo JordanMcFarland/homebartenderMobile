@@ -1,10 +1,10 @@
 import React from "react";
 import { Pressable } from "react-native";
-import CocktailInfo from "../components/CocktailInfo";
+import CocktailInfo from "../screens/CocktailInfo";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Favorites from "../components/Favorites";
-import MyCocktailInfo from "../components/MyCocktailInfo";
-import MyCocktailEditor from "../components/MyCocktailEditor";
+import Favorites from "../screens/Favorites";
+import MyCocktailInfo from "../screens/MyCocktailInfo";
+import MyCocktailEditor from "../screens/MyCocktailEditor";
 import BackArrow from "./components/BackArrow";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";

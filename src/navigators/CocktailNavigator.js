@@ -1,7 +1,7 @@
 import React from "react";
 import { Pressable } from "react-native";
-import CocktailDirectory from "../components/CocktailDirectory";
-import CocktailInfo from "../components/CocktailInfo";
+import CocktailDirectory from "../screens/CocktailDirectory";
+import CocktailInfo from "../screens/CocktailInfo";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faBars, faArrowLeft } from "@fortawesome/free-solid-svg-icons";

@@ -1,6 +1,6 @@
 import React from "react";
-import Login from "../components/Login";
-import CreateUser from "../components/CreateUser";
+import Login from "../screens/Login";
+import CreateUser from "../screens/CreateUser";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {

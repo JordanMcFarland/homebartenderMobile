@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import MyBar from "../components/MyBar";
-import MyBarEditor from "../components/MyBarEditor";
-import CraftableCocktails from "../components/CraftableCocktails";
-import CocktailInfo from "../components/CocktailInfo";
-import MyCocktailInfo from "../components/MyCocktailInfo";
-import MyCocktailEditor from "../components/MyCocktailEditor";
+import MyBar from "../screens/MyBar";
+import MyBarEditor from "../screens/MyBarEditor";
+import CraftableCocktails from "../screens/CraftableCocktails";
+import CocktailInfo from "../screens/CocktailInfo";
+import MyCocktailInfo from "../screens/MyCocktailInfo";
+import MyCocktailEditor from "../screens/MyCocktailEditor";
 import { Pressable, Text } from "react-native";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";

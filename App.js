@@ -1,6 +1,6 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import Main from "./src/components/Main";
+import Main from "./src/screens/Main";
 import { AuthProvider } from "./src/providers/AuthProvider";
 import { AirtableProvider } from "./src/providers/AirtableProvider";
 import { SafeAreaProvider } from "react-native-safe-area-context";
