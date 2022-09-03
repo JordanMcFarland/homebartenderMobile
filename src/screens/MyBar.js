@@ -1,18 +1,36 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ScrollView, View, Text } from "react-native";
 import { Button } from "@rneui/base";
-import g from "../styles/styles";
+import g, { width } from "../styles/styles";
 import { AuthContext } from "../providers/AuthProvider";
 import SlidingView from "./components/SlidingView";
 
 const MyBar = ({ navigation }) => {
-  const { user } = useContext(AuthContext);
+  const { user, removeSingleIngredientFromUserBar, setTempUserBar } =
+    useContext(AuthContext);
   const [userBarCategories, setUserBarCategories] = useState([]);
 
   useEffect(() => {
     const newCategories = Object.keys(user.userBar);
     setUserBarCategories(newCategories);
   }, [user]);
+
+  const removeIngredient = (category, ingredientId) => {
+    try {
+      let updatedUserBar = {};
+      const updatedIngredientCategory = user.userBar[category].filter(
+        (ing) => ing._id !== ingredientId
+      );
+      updatedUserBar = {
+        ...user.userBar,
+        [category]: updatedIngredientCategory,
+      };
+
+      removeSingleIngredientFromUserBar(updatedUserBar);
+    } catch (err) {
+      alert(err);
+    }
+  };
 
   const renderMyBar = userBarCategories.map((category, index) => {
     if (user.userBar[category].length) {
@@ -26,26 +44,26 @@ const MyBar = ({ navigation }) => {
                 containerStyle={[g.mv1, g.br1]}
                 sliderStyle={[
                   g.bg.secondary,
-                  g.br1,
+                  g.br2,
                   g.pv3,
+                  g.bdc.dark,
                   {
-                    borderWidth: 1,
+                    borderWidth: 2,
                   },
                 ]}
                 buttonText="Remove"
                 buttonStyle={[
                   g.bg.dark,
-                  g.br1,
+                  g.br2,
                   {
-                    width: 200,
+                    width: width / 5,
                   },
                 ]}
                 buttonTextStyle={g.white}
-                sliderActivateDistance={-200}
+                sliderActivateDistance={-(width / 5)}
+                onPress={() => removeIngredient(category, ingredient._id)}
               >
-                <Text style={[g.h4, { alignSelf: "center" }]}>
-                  {ingredient.name}
-                </Text>
+                <Text style={[g.h4, g.ml6]}>{ingredient.name}</Text>
               </SlidingView>
             );
           })}

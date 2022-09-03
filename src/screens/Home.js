@@ -49,23 +49,6 @@ const Home = () => {
       <Text style={[g.primary, g.h1, g.pr3, g.pt3, { marginLeft: "auto" }]}>
         {user && `Hello, ${user.username}!`}
       </Text>
-      <SlidingView
-        containerStyle={{
-          width: "100%",
-          alignSelf: "center",
-        }}
-        sliderStyle={[
-          g.bg.primary,
-          g.bdc.secondary,
-          { borderWidth: 3, justifyContent: "center" },
-        ]}
-        buttonStyle={g.bg.secondary}
-        buttonText="Delete"
-        onPress={() => console.log("Pressed")}
-        sliderActivateDistance={-(width / 4)}
-      >
-        <Text style={{ height: 40, alignSelf: "center" }}>Hey</Text>
-      </SlidingView>
       <ScrollView
         contentContainerStyle={[
           g.pb3,

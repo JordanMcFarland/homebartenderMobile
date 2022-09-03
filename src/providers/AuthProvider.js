@@ -90,6 +90,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const removeSingleIngredientFromUserBar = async (updatedUserBar) => {
+    const response = await updateUserBar(updatedUserBar);
+    const userData = { ...user, userBar: response.updatedUserBar };
+    setUser(userData);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -120,6 +126,7 @@ export const AuthProvider = ({ children }) => {
         handlePostUserFavorite,
         handleDeleteUserFavorite,
         handleUpdateUserBar,
+        removeSingleIngredientFromUserBar,
       }}
     >
       {children}
